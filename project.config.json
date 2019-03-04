@@ -1,0 +1,13 @@
+{
+  "description": "这是一个线上零售用户端",
+  "setting": {
+    "urlCheck": true,
+    "es6": false,
+    "postcss": false,
+    "minified": false
+  },
+  "compileType": "miniprogram",
+  "appid": "wx6e219488e53a4991",
+  "projectname": "mpstore",
+  "miniprogramRoot": "./dist"
+}
