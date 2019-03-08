@@ -1,0 +1,118 @@
+<style lang="scss" scoped>
+    .home-main{
+      width:100%;
+      .home-header{
+        width:100%;
+        padding: 10rpx 20rpx;
+        top: 0;
+        z-index: 0;left: 0;
+        box-sizing: border-box;
+        background-color: #fff;
+        .header-search-main{
+          width: 100%;
+          padding: 0 10rpx;
+          box-sizing: border-box;
+        }
+      }
+      .home-container{
+          margin-top: 75rpx;
+          border: 1px solid transparent;
+          background-color: #efefef;
+          min-height: 100vh;
+          .loading-main{
+              width: 100%;
+              justify-content: center;
+              margin-top: 240rpx;
+          }
+      }
+    }
+  
+</style>
+<template>
+    <view class="home-main">
+        <view class="home-header fixed" wx:if="{{!isEmpty && !Loading}}">
+             <view class="header-search-main">
+                <Search></Search>
+            </view>
+        </view>
+        <view class="home-container">
+          <view class="loading-main fixed sys-flex" wx:if="{{Loading}}">
+              <Loading></Loading>
+          </view>
+          <block wx:else >
+              <storelist  :storeList.sync="storeList" @clickItemEvent.user="toStoreDetail"></storelist>
+          </block>
+          <Empty wx:if="{{isEmpty}}" empty_icon="/static/images/store.png" text="附近暂未开通店铺哦😯"></Empty>
+        </view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy'
+import { connect } from 'wepy-redux'
+import StoreList from '@/components/store-list' // alias example
+import Loading from '@/components/Loading' // alias example
+import Empty from '@/components/empty' // alias example
+import Search from '@/components/search' // alias example
+import * as ACTION from '@/store/actions'
+
+@connect({
+  isEmpty (state) {
+    return state.home.isEmpty
+  },
+  Loading (state) {
+    return state.home.Loading
+  },
+  storeList (state) {
+    return state.home.storeList
+  }
+},{
+getStoreList:ACTION.getStoreList,
+getUserLocaltion:ACTION.getUserLocaltion
+})
+
+export default class Home extends wepy.page{
+    config = {
+      navigationBarTitleText: '定位中...'
+    }
+    components = {
+      storelist:StoreList,
+      Loading,
+      Search,
+      Empty
+    }
+    data = {
+      localtion:{
+        lat:'',
+        lng:''
+      }
+    }
+    methods = {
+      toStoreDetail (item) {
+        console.log(item,'--item--toStoreDetail')
+        wx.navigateTo({
+          url: '/pages/store_detail/store_detail?_id=' + item._id,
+        })
+      }
+    }
+    onLoad () {
+      this.getUserLocaltion();
+    }
+    getStoreList () {
+       this.methods.getStoreList();
+    }
+    getUserLocaltion () {
+       this.methods.getUserLocaltion().then(({payload})=>{
+         this.getStoreList();
+         wx.setNavigationBarTitle({title: payload.address})
+       })
+    }
+    onPullDownRefresh () {
+       this.getUserLocaltion();
+    }
+    initQQmap () {
+
+    }
+}
+</script>
+
+

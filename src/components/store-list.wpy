@@ -1,0 +1,244 @@
+<style lang="scss" scoped>
+    .store-main{
+      padding:20rpx;
+      margin:10rpx;
+      background-color: #fff;
+      &>image{
+        width: 150rpx;
+        height: 130rpx;
+        border-radius: 15rpx 0 15rpx 0;
+        .is-business-card{
+          width: 100%;
+          height: 30rpx; 
+          line-height: 30rpx; 
+          background-color: rgba(0,0,0,0.5);
+          text-align: center;
+          color: #fff;
+          bottom: 0;
+        }
+      }
+      .store-r-main{
+        .store-title{
+          padding:0 10rpx;
+        }
+        .store-info{
+          flex-wrap: wrap;
+          align-items: center;
+          padding:5rpx 10rpx;
+          color: #333;
+          .store-deliverys-time{
+            padding:0 10rpx;
+          }
+          .store-start-price{
+            padding-right: 5rpx;
+          }
+          .store-delivery-way{
+            width: fit-content;
+            height: 30rpx;
+            border: 5rpx;
+            line-height: 30rpx;
+            padding: 0 5rpx;
+            color: #fff;
+            border-radius: 5rpx;
+            background-color:#FF3332;
+          }
+          .store-notice-rules{
+            width: fit-content;
+            height: 22rpx;
+            line-height: 22rpx;
+            text-align: center;
+            color: #FF3332;
+            padding: 0 5rpx;
+            margin-right:10rpx;
+            align-items: center;
+            border: 1rpx solid rgba(233, 48, 48,0.4);
+            &:last-child{
+               margin:0;
+            }
+          }
+        }
+      }
+      .business-main-card{
+        width: 100%;
+        min-height: 180rpx;
+        background-color: rgba(255,255,255,0.5);
+        top: 0;
+        left: 0;
+      }
+    }
+</style>
+<template>
+     <block wx:for-items="{{storeList}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+        <view class="store-main sys-flex relative" @tap="clickItemEvent({{item}})">
+          <!-- 店铺图片 -->
+          <image mode="aspectFill" class="relative" src="{{item.src}}">
+              <!-- 是否营业 -->
+              <view class="is-business-card absolute f-10" wx:if="{{!item.setting.is_business}}">未营业</view>
+          </image>
+          <view class="store-r-main sys-flex-one">
+              <view class="store-title f-13 font-weight-500">{{item.name}}</view>
+              <view class="store-info f-12 sys-flex">
+                  <view class="store-month-sales-num sys-flex-one">月售: {{item.sales_num || 10}}</view>
+                  <view class="store-deliverys-time">{{item.delivery_info.times || 13}}分钟</view>
+                  <view class="store-distance">{{item.setting.distance}}km</view>
+              </view>
+              <view class="store-info f-12 sys-flex">
+                  <view class="store-start-price">起送: ¥{{item.setting.start_delivery_price}}</view>
+                  <view class="store-deliverys-price sys-flex-one">配送: ¥{{item.setting.delivery_price}}</view>
+                  <view class="store-delivery-way f-11">{{item.delivery_info.way ? '商家配送':'平台配送'}}</view>
+              </view>
+              <view class="store-info  sys-flex">
+                  <view class="store-notice-rules sys-flex f-11" wx:for-items="{{item.setting.discounts}}" wx:for-index="index" wx:for-item="setting_item" wx:key="index">
+                    满{{setting_item.buy_price}}减{{setting_item.discount_price}}
+                  </view>
+              </view>
+          </view>
+          <!-- 是否营业shade -->
+          <view class="business-main-card absolute" wx:if="{{!item.setting.is_business}}"></view>
+      </view>
+     </block>
+</template>
+<script>
+import wepy from 'wepy'
+export default class Storelist extends wepy.component{
+    props = {
+      List: {
+        type: Array,
+        coerce: function (v) {
+          return +v
+        },
+        default: [1,2,3]
+      },
+      storeList: {
+        type:Array,
+        coerce: function (v) {
+          console.log(v,'vvvvv')
+        },
+        default:[]
+      }
+    }
+    data = {
+      List:[{
+        src:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1551698280180&di=12a16c1c0a103b3d1e9b69be79871ade&imgtype=0&src=http%3A%2F%2Fimg.dongcoder.com%2Fup%2Finfo%2F201809%2F20180906141608697847.jpg',
+        name:'肯德基（雨花客厅）',
+        sales_num:73,
+        start_prices:20,
+        delivery_info:{
+          price:4.5,
+          times:35,
+          way:1
+        }
+      },{
+        src:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1551701831351&di=c8af57c78dd85f68be3b4a5bcb7abb82&imgtype=0&src=http%3A%2F%2Fimg.25pp.com%2Fuploadfile%2Fsoft%2Fimages%2F2015%2F0715%2F20150715020925263.jpg',
+        name:'罗森（老门东景区店）',
+        sales_num:221,
+        start_prices:20,
+        delivery_info:{
+          price:4,
+          times:42,
+          way:1
+        }
+      },{
+        src:'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3455785562,3755970171&fm=26&gp=0.jpg',
+        name:'松鼠便利',
+        sales_num:141,
+        start_prices:20,
+        delivery_info:{
+          price:4,
+          times:56,
+          way:1
+        }
+      },{
+        src:'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3455785562,3755970171&fm=26&gp=0.jpg',
+        name:'松鼠便利',
+        sales_num:141,
+        start_prices:20,
+        delivery_info:{
+          price:4,
+          times:56,
+          way:1
+        }
+      },{
+        src:'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3455785562,3755970171&fm=26&gp=0.jpg',
+        name:'松鼠便利',
+        sales_num:141,
+        start_prices:20,
+        delivery_info:{
+          price:4,
+          times:56,
+          way:1
+        }
+      },{
+        src:'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3455785562,3755970171&fm=26&gp=0.jpg',
+        name:'松鼠便利',
+        sales_num:141,
+        start_prices:20,
+        delivery_info:{
+          price:4,
+          times:56,
+          way:1
+        }
+      },{
+        src:'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3455785562,3755970171&fm=26&gp=0.jpg',
+        name:'松鼠便利',
+        sales_num:141,
+        start_prices:20,
+        delivery_info:{
+          price:4,
+          times:56,
+          way:1
+        }
+      },{
+        src:'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3455785562,3755970171&fm=26&gp=0.jpg',
+        name:'松鼠便利',
+        sales_num:141,
+        start_prices:20,
+        delivery_info:{
+          price:4,
+          times:56,
+          way:1
+        }
+      },{
+        src:'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3455785562,3755970171&fm=26&gp=0.jpg',
+        name:'松鼠便利',
+        sales_num:141,
+        start_prices:20,
+        delivery_info:{
+          price:4,
+          times:56,
+          way:1
+        }
+      },{
+        src:'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3455785562,3755970171&fm=26&gp=0.jpg',
+        name:'松鼠便利',
+        sales_num:141,
+        start_prices:20,
+        delivery_info:{
+          price:4,
+          times:56,
+          way:1
+        }
+      },{
+        src:'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3455785562,3755970171&fm=26&gp=0.jpg',
+        name:'松鼠便利',
+        sales_num:141,
+        start_prices:20,
+        delivery_info:{
+          price:4,
+          times:56,
+          way:1
+        }
+      }]
+    }
+    attached () {
+      console.log(this.storeList,'storeList')
+    }
+    methods={
+      clickItemEvent (item) {
+        this.$emit('clickItemEvent',item)
+      }
+    }
+}
+</script>
+
+

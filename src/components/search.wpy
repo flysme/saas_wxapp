@@ -1,0 +1,41 @@
+<style lang="scss">
+    .search-main-box{
+        width: 100%;
+        height: 60rpx;
+        border-radius: 15rpx;
+        background-color: #ededed;
+        padding:0 20rpx;
+        box-sizing: border-box;
+        align-items: center;
+        image{
+          width: 26rpx;
+          height: 26rpx;
+          margin-right: 10rpx;
+        }
+        .input{
+          width: 100%;
+          height: 60rpx;
+        }
+        .empty-placeholder-text{
+          color: #999;
+        }
+    }
+</style>
+<template>
+  <view class="search-main-box sys-flex">
+        <image src="/static/images/search.png"></image>
+        <input type="text" placeholder-class="empty-placeholder-text"  placeholder="{{placeholderText}}"  class="f-14"/>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class Search extends wepy.component {
+    props = {
+       placeholderText:{
+         type:[String,Number],
+         default:'搜索店内商品吧'
+       }
+    }
+  }
+</script>

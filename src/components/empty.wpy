@@ -1,0 +1,39 @@
+<style lang="scss" scoped>
+   .empty-icon{
+    margin:280rpx auto;
+    text-align: center;
+    color: #cdcdcd;
+    image{
+      width: 180rpx;
+      height: 160rpx;
+      vertical-align: top;
+    }
+    .empty-text{
+      margin-top: 30rpx;
+    }
+  }
+</style>
+<template>
+   <view class="empty-icon">
+        <image src="{{empty_icon}}"></image>
+        <view class="empty-text f-14">{{text}}</view>
+    </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import config from '@/config/index'
+  export default class Empty extends wepy.component {
+    props = {
+      text: {
+        type:String,
+        default:'暂无商品'
+      },
+      empty_icon:{
+        type:String,
+        default:config.empty_icon
+      }
+    }
+    data = {
+    }
+  }
+</script>

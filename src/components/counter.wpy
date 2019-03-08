@@ -42,7 +42,7 @@
   }, {
     incNum: INCREMENT,
     decNum: DECREMENT,
-    asyncInc
+    // asyncInc
   })
 
   export default class Counter extends wepy.component {
@@ -64,7 +64,6 @@
         console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
       }
     }
-
     watch = {
       num (curVal, oldVal) {
         console.log(`旧值：${oldVal}，新值：${curVal}`)

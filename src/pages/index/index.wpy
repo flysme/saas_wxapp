@@ -21,7 +21,7 @@
       <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
       <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
     </view>
-
+    
     <panel>
       <view class="title" slot="title">测试数据绑定</view>
 
@@ -85,11 +85,11 @@
   import { connect } from 'wepy-redux'
   import Panel from '@/components/panel' // alias example
   import Counter from 'counter' // alias example
-  import List from '../components/list' // aliasFields example
+  import List from '../../components/list' // aliasFields example
   import moduleA from 'module-a' // aliasFields ignore module example
-  import Group from '../components/group'
+  import Group from '../../components/group'
   import Toast from 'wepy-com-toast'
-  import testMixin from '../mixins/test'
+  import testMixin from '../../mixins/test'
 
   console.log('moduleA ignored: ', moduleA) // => moduleA ignored: {}
 
@@ -222,7 +222,7 @@
       },
       counterEmit (...args) {
         let $event = args[args.length - 1]
-        console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
+        console.log(`counterEmitcounterEmit${this.$name} receive ${$event.name} from ${$event.source.$name}`)
       }
     }
 

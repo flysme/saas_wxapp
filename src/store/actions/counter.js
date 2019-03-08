@@ -1,10 +1,11 @@
 import { ASYNC_INCREMENT } from '../types/counter'
 import { createAction } from 'redux-actions'
 
-export const asyncInc = createAction(ASYNC_INCREMENT, () => {
+export const asyncInc = createAction(ASYNC_INCREMENT, (state) => {
   return new Promise(resolve => {
+    console.log(state,'state')
     setTimeout(() => {
-      resolve(1)
+      resolve({name:'zfx'})
     }, 1000)
   })
 })

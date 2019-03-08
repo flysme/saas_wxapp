@@ -1,4 +1,7 @@
-<style lang="less">
+<style lang="scss">
+page{
+  background-color: #efefef;
+}
 .container {
   height: 100%;
   display: flex;
@@ -7,12 +10,36 @@
   justify-content: space-between;
   box-sizing: border-box;
 }
+
+@for $i from 7 through 18 {
+  .f-#{$i} { font-size: 2rpx * $i; }
+}
+
+@each $i in 400, 500 {
+   .font-weight-#{$i} { font-weight: $i;}
+} 
+
+@each $key in fixed, relative,absolute {
+   .#{$key} { position: $key;}
+} 
+
+.sys-flex{
+  display: flex;
+}
+
+.sys-flex-one{
+  flex: 1;
+}
+
+.mr-0{
+  margin-right: 0!important;
+}
+
 </style>
 
 <script>
 import wepy from 'wepy'
 import 'wepy-async-function'
-
 import { setStore } from 'wepy-redux'
 import configStore from './store'
 
@@ -22,13 +49,21 @@ setStore(store)
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/index'
+      'pages/index/index',
+      'pages/home/home',
+      'pages/store_detail/store_detail'
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
+      enablePullDownRefresh:true,
       navigationBarTextStyle: 'black'
+    },
+    permission: {
+      "scope.userLocation": {
+        "desc": "你的位置信息将用于小程序位置使用"
+      }
     }
   }
 
@@ -57,7 +92,6 @@ export default class extends wepy.app {
     const data = await this.sleep(3)
     console.log(data)
   }
-
   getUserInfo(cb) {
     const that = this
     if (this.globalData.userInfo) {

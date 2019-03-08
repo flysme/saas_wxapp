@@ -15,9 +15,10 @@ export default handleActions({
     }
   },
   [ASYNC_INCREMENT] (state, action) {
+    console.log(action.payload,'action.payload')
     return {
       ...state,
-      asyncNum: state.asyncNum + action.payload
+      asyncNum: state.asyncNum + 1
     }
   }
 }, {

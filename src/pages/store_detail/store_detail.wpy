@@ -1,0 +1,254 @@
+<style lang="scss" scoped>
+      .store-main{
+          border: 1px solid transparent;
+          background-color: #efefef;
+          min-height: 100vh;
+          .loading-main{
+              width: 100%;
+              justify-content: center;
+              margin-top: 240rpx;
+          }
+          .content-main{
+            .content-header-main{
+              white-space: nowrap;
+              width: 100%;
+              height: 150rpx;
+              transition: 0.4s;
+              background-color: #FFF;
+              top:0;
+              left: 0;
+              .search-main{
+                width: 100%;
+                height: 70rpx;
+                background-color: #FFF;
+                padding: 0 20rpx;
+                box-sizing: border-box;
+                top: 0;
+                left: 0;
+                z-index: 10;
+              }
+              scroll-view{
+                width:100%;
+                padding: 10rpx 20rpx;
+                height: 60rpx;
+                overflow:scroll;
+                background-color: #FFF;
+                top: 0;
+                left: 0;
+                .scroll-view-item{
+                  display: inline-block;
+                  width: 120rpx;
+                  padding: 10rpx 0;
+                  text-align: center;
+                }
+                .active {
+                  color: #ff6787;
+                }
+              }
+            }
+            .f-top-60{
+                transform: translateY(-70rpx);
+            }
+            .content-container-main{
+              margin-top: 150rpx;
+              .tradings-list{
+                  padding:10rpx 20rpx;
+                  flex-wrap: wrap;
+                .tradings-item-main{
+                  width:calc( (100% - 20rpx ) / 2 );
+                  padding:0 20rpx;
+                  box-sizing: border-box;
+                  min-height: 340rpx;
+                  background-color: #FFF;
+                  margin:10rpx 20rpx 10rpx 0;
+                  overflow: hidden;
+                  image{
+                    display: block;
+                    margin:20rpx auto;
+                    margin-top:30rpx;
+                    width: 80%;
+                    height: 180rpx;
+                  }
+                  .tradings-title{
+                    text-overflow: -o-ellipsis-lastline;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    height: 70rpx;
+                    line-height: 35rpx;
+                  }
+                  .tradings-foot-main{
+                    justify-content: space-between;
+                    align-items: center;
+                    height: 60rpx;
+                    .tradings-price{
+                      color: #FC2525;
+                      line-height: 1;
+                    }
+                    .tradings-btn{
+                      width:130rpx;
+                      height:42rpx;
+                      border-radius:15rpx;
+                      background-color:#ff6787;
+                      color:#fff;
+                      line-height:42rpx;
+                      text-align:center;
+                    }
+                  }
+                }
+              }
+            }
+          }
+      }
+  
+</style>
+<template>
+    <view class="store-main">
+        <view class="loading-main fixed sys-flex" wx:if="{{Loading}}">
+            <Loading></Loading>
+        </view>
+        <view class="content-main">
+            <view class="content-header-main fixed {{isHiddenSearch ? 'f-top-60' :''}}">
+                  <view class="search-main">
+                    <Search></Search>
+                  </view>
+                  <scroll-view
+                    scroll-x
+                    scroll-into-view="{{toView}}"
+                    scroll-with-animation="true"
+                  >
+                   <block  wx:for-items="{{catesgoryList}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+                      <view id="category_{{index}}" @tap="chooseCategorys({{index}})" class="scroll-view-item  f-13 {{catetory_index==index ?'font-weight-500 active':''}}">{{item.category_name}}</view>
+                    </block>
+                  </scroll-view>
+            </view>
+             <view class="content-container-main" wx:if="{{!Loading}}">
+                <view class="tradings-list sys-flex">
+                    <block wx:for-items="{{tradingsList}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+                       <view class="tradings-item-main {{((index+1) % 2) ==0 ?'mr-0':''}}">
+                        <image src="{{item.src}}" mode="aspectFit"></image>
+                        <view class="tradings-title f-11">{{item.title}}</view>
+                        <view class="tradings-foot-main sys-flex">
+                            <view class="tradings-price f-13">¥{{item.sku_price}}</view>
+                            <view class="tradings-btn f-11">加入购物车</view>
+                        </view>
+                      </view>
+                    </block>
+                </view>
+                <Empty wx:if="{{isEmpty}}"></Empty>
+            </view>
+             <view class="content-footer-main">
+
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy'
+import { connect } from 'wepy-redux'
+import StoreList from '@/components/store-list' // alias example
+import Loading from '@/components/Loading' // alias example
+import Empty from '@/components/empty' // alias example
+import Search from '@/components/search' // alias example
+import * as ACTION from '@/store/actions'
+@connect({
+  isEmpty (state) {
+    return state.store_detail.isEmpty
+  },
+  storeInfo (state) {
+    return state.store_detail.storeInfo
+  },
+  tradingsList (state) {
+    return state.store_detail.tradingsList
+  },
+  catesgoryList (state) {
+    return state.store_detail.catesgoryList
+  }
+},{
+  getStoreInfo:ACTION.getStoreInfo,
+  getStoreTradings:ACTION.getStoreTradings,
+  getProductcategory:ACTION.getProductcategory
+})
+
+export default class Storedetail extends wepy.page{
+    config = {
+      navigationBarTitleText: '...'
+    }
+    components = {
+      Loading,
+      Search,
+      Empty
+    }
+    data = {
+      toView:'category_0',
+      catetory_index:0,
+      timer:null,
+      Loading:true,
+      isHiddenSearch:false,
+      category_id:null,
+      localtion:{
+        lat:'',
+        lng:''
+      }
+    }
+    methods = {
+      chooseCategorys (index) {
+        if (this.catetory_index == index)return;
+        this.catetory_index = index;
+        this.toView = 'category_' + index;
+        this.category_id = this.catesgoryList[index]['category_id'];
+        this.Loading= true;
+        this.getStoreTradings();
+      }
+      
+    }
+    onLoad (options) {
+      this._id = options._id;
+      this.getStoreInfo();
+      this.getProductcategory();
+      this.getStoreTradings();
+    }
+    getStoreInfo () {
+      this.methods.getStoreInfo({_id: this._id }).then(()=>{
+            console.log(this.storeInfo)
+          wx.setNavigationBarTitle({
+            title: this.storeInfo.title
+          })
+       })
+    }
+     /* 获取商品分类*/ 
+    getProductcategory () {
+      this.methods.getProductcategory({_id: this._id }).then(({payload})=>{
+
+       })
+    }
+    /*获取商品*/ 
+    getStoreTradings () {
+      let params = {_id: this._id }
+      if (this.category_id) params.category_id = this.category_id;
+      this.methods.getStoreTradings(params).then(()=>{
+        this.Loading= false;
+        this.$apply();
+      })
+    }
+    onPullDownRefresh () {
+        this.getProductcategory();
+       this.getStoreTradings();
+    }
+    onPageScroll({scrollTop}) {
+      if(this.timer)clearTimeout(this.timer);
+      this.timer = setTimeout(()=>{
+        if (scrollTop > 70 ) {
+            this.isHiddenSearch = true;
+        } else {
+          this.isHiddenSearch = false;
+        }
+        this.$apply();
+      },1000)
+    }
+}
+</script>
+
+

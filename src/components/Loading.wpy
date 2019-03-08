@@ -1,0 +1,35 @@
+<style lang="scss">
+    .studty_ft{
+        width: 100%;
+        padding: 5rpx 0;
+        text-align: center;
+        .weui-loading{
+          margin: 0 5px;
+          width: 120rpx;
+          height: 150rpx;
+          vertical-align: top;
+          background:  url('http://img.hb.aicdn.com/5552eda600606b46dfb0b1f6639a9c67102541bd188b2-2cUSHL_fw658') no-repeat;
+          background-size: 100%;
+        }
+        .noData{
+          display: inline-block;
+          vertical-align: middle;
+          color:  #999999;
+        }
+    }
+</style>
+<template>
+  <view class="loading">
+      <view class='studty_ft'>
+            <view class='weui-loading'></view>
+            <view class='noData f-12'>努力加载中...</view>
+      </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class Loading extends wepy.component {
+
+  }
+</script>
