@@ -5,7 +5,8 @@
         width:100%;
         padding: 10rpx 20rpx;
         top: 0;
-        z-index: 0;left: 0;
+        z-index: 10;
+        left: 0;
         box-sizing: border-box;
         background-color: #fff;
         .header-search-main{
@@ -32,7 +33,7 @@
     <view class="home-main">
         <view class="home-header fixed" wx:if="{{!isEmpty && !Loading}}">
              <view class="header-search-main">
-                <Search></Search>
+                <Search placeholderText="搜你想要的店吧" @search.user="searchStore"></Search>
             </view>
         </view>
         <view class="home-container">
@@ -41,8 +42,9 @@
           </view>
           <block wx:else >
               <storelist  :storeList.sync="storeList" @clickItemEvent.user="toStoreDetail"></storelist>
+              <Empty wx:if="{{isSearchEmpty}}" empty_icon="/static/images/store.png" text="附近暂未开通店铺哦😯"></Empty>
           </block>
-          <Empty wx:if="{{isEmpty}}" empty_icon="/static/images/store.png" text="附近暂未开通店铺哦😯"></Empty>
+          <Empty wx:if="{{isEmpty}}" empty_icon="/static/images/store.png" text="暂未搜到店铺哦😯"></Empty>
         </view>
     </view>
 </template>
@@ -59,6 +61,9 @@ import * as ACTION from '@/store/actions'
   isEmpty (state) {
     return state.home.isEmpty
   },
+  isSearchEmpty (state) {
+    return state.home.isSearchEmpty
+  },
   Loading (state) {
     return state.home.Loading
   },
@@ -67,7 +72,8 @@ import * as ACTION from '@/store/actions'
   }
 },{
 getStoreList:ACTION.getStoreList,
-getUserLocaltion:ACTION.getUserLocaltion
+getUserLocaltion:ACTION.getUserLocaltion,
+searchStore:ACTION.searchStore
 })
 
 export default class Home extends wepy.page{
@@ -92,6 +98,9 @@ export default class Home extends wepy.page{
         wx.navigateTo({
           url: '/pages/store_detail/store_detail?_id=' + item._id,
         })
+      },
+      searchStore (value) {
+        console.log(value,'value')
       }
     }
     onLoad () {
@@ -108,9 +117,6 @@ export default class Home extends wepy.page{
     }
     onPullDownRefresh () {
        this.getUserLocaltion();
-    }
-    initQQmap () {
-
     }
 }
 </script>

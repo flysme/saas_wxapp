@@ -24,18 +24,22 @@
 <template>
   <view class="search-main-box sys-flex">
         <image src="/static/images/search.png"></image>
-        <input type="text" placeholder-class="empty-placeholder-text"  placeholder="{{placeholderText}}"  class="f-14"/>
+        <input type="text" placeholder-class="empty-placeholder-text" @confirm="search"  placeholder="{{placeholderText}}"  class="f-14"/>
   </view>
 </template>
 <script>
   import wepy from 'wepy'
-
   export default class Search extends wepy.component {
     props = {
        placeholderText:{
          type:[String,Number],
          default:'搜索店内商品吧'
        }
+    }
+    methods = {
+      search ({detail:{value}}) {
+        this.$emit('search',value);
+      }
     }
   }
 </script>
