@@ -198,15 +198,16 @@
                       flex-wrap: wrap;
                       .tradings-sku-v-item{
                         margin:0 20rpx 20rpx 0;
-                        width: 25%;
-                        height: 50rpx;
-                        line-height: 50rpx;
+                        width: 26%;
+                        height: 60rpx;
+                        line-height: 60rpx;
                         background-color: #dbdbdb;
                         text-align: center;
                         color: #515151;
                         overflow: hidden;
                         white-space: nowrap;
                         text-overflow: ellipsis;
+                        border-radius:10rpx;
                       }
                       .sku-select{
                           color: #fff;
@@ -383,6 +384,7 @@ import StoreList from '@/components/store-list' // alias example
 import Loading from '@/components/Loading' // alias example
 import Empty from '@/components/empty' // alias example
 import Search from '@/components/search' // alias example
+import MathFool from '@/utils/math' // 精度计算
 import * as ACTION from '@/store/actions'
 @connect({
   isEmpty (state) {
@@ -430,7 +432,7 @@ export default class Storedetail extends wepy.page{
       showSkuModal: false,
       start_diff_delivery_price:0,
       shopCarList:[], //购物车数据
-      total_price:null //总金额
+      total_price:0 //总金额
     }
     computed = {
       // 是否禁止点击选择sku确认
@@ -465,7 +467,7 @@ export default class Storedetail extends wepy.page{
       },
       // 关闭购物车modal
       closeSkuModal () {
-        this.showSkuModal = false;
+        this.closeSkuShowModal()
       },
       touchmove () {return},
       // 加入购物车
@@ -512,12 +514,13 @@ export default class Storedetail extends wepy.page{
           return wx.showToast({title:'sku无效',icon:'none'})
         };
         this.joinShopCar(); //加入购物车
-        this.closeSkuModal(); //关闭弹窗
+        this.closeSkuShowModal(); //关闭弹窗
       }
     }
     onLoad (options) {
       this._id = options._id;
       this.init();
+      console.log(MathFool,'Math')
     }
     init () {
        this.getStoreInfo();
@@ -539,6 +542,9 @@ export default class Storedetail extends wepy.page{
         let [selectSkuInfo] = this.skuInfo && this.skuInfo.skuList.filter(item=>item.specs == matchSkuSpecs) ||[];
         this.selectSkuInfo = selectSkuInfo;
     }
+    closeSkuShowModal () {
+        this.showSkuModal = false;
+    }
     joinShopCar () {
       let isExist = false;
       this.shopCarList.length && this.shopCarList.forEach(item => {
@@ -551,6 +557,8 @@ export default class Storedetail extends wepy.page{
         sku_id: this.selectSkuInfo._id,
         num: 1,
       })
+      this.total_price = MathFool.add(this.total_price,this.selectSkuInfo.price) //总价
+      this.start_diff_delivery_price = MathFool.add(this.start_diff_delivery_price,this.selectSkuInfo.price) //起送价比对
       console.log(this.shopCarList,'this.shopCarList')
     }
     getStoreInfo () {
