@@ -14,6 +14,14 @@ const STOREDETAIL = {
   // 获取商店商品信息
   getStoreTradings (data) {
     return get(storeDetail.getStoreTradings,data)
+  },
+  // 加入购物车
+  addshopcar (data) {
+    return get(storeDetail.addshopcar,data,null,true)
+  },
+  // 减购物车
+  reduceshopcar (data) {
+    return get(storeDetail.reduceshopcar,data,null,true)
   }
 }
 export default STOREDETAIL;

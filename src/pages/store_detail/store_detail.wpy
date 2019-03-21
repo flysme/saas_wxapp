@@ -189,6 +189,9 @@
                     height: 20vh;
                     padding: 20rpx 0;
                     overflow: scroll;
+                    &::-webkit-scrollbar {
+                      display: none;
+                    }
                     .tradings-sku-title{
                       margin: 20rpx 0;
                       color: #bfbfbf;
@@ -229,53 +232,139 @@
                   }
                 }
               }
-              .shopcar-settle{
+              .shopcar-holder{
                 width:90%;
-                height: 80rpx;
-                line-height: 80rpx;
-                border-radius: 40rpx;
-                background: #353431;
-                align-items: center;
-                color: #fff;
-                bottom: 20rpx;
-                left: 5%;
+                padding-bottom: 20rpx;
+                bottom: 0;
                 z-index: 5;
+                left: 5%;
                 margin: 0 0;
-                image{
-                  width: 80rpx;
-                  height: 80rpx;
-                }
-                .settle-car-price{
-                  line-height: 1;
-                  .settle-total-price{
-                    color: #fff;
-                    padding:5rpx 0 10rpx 10rpx;
-                  }
-                  .settle-delivery-price{
-                    padding:2rpx 0 0 10rpx;
-                    color: #bfbfbf;
-                  }
-                }
-                .settle-btn-main{
-                  .settle-diff-price{
-                    color: #bfbfbf;
-                    padding-right: 40rpx;
-                  }
-                  .btn-settle{
-                    width:180rpx;
+                .shopcar-settle{
+                    width:90%;
                     height: 80rpx;
                     line-height: 80rpx;
-                    text-align: center;
-                    background-color: #ff6787;
-                    border-radius: 0 40rpx 40rpx 0;
-                  }
+                    border-radius: 40rpx;
+                    bottom: 20rpx;
+                    z-index: 5;
+                    background: #353431;
+                    align-items: center;
+                    color: #fff;
+                    image{
+                      width: 80rpx;
+                      height: 80rpx;
+                    }
+                    .shopcar-num{
+                      width: 35rpx;
+                      height: 35rpx;
+                      line-height: 35rpx;
+                      border-radius: 35rpx;
+                      text-align: center;
+                      color: #fff;
+                      background: linear-gradient(to right,#f29b65,#fa5f49);
+                      left: 50rpx;
+                      top: -3rpx;
+                      z-index: 10;
+                    }
+                    .settle-car-price{
+                      line-height: 1;
+                      .settle-total-price{
+                        color: #fff;
+                        padding:5rpx 0 10rpx 10rpx;
+                      }
+                      .settle-delivery-price{
+                        padding:2rpx 0 0 10rpx;
+                        color: #bfbfbf;
+                      }
+                    }
+                    .settle-btn-main{
+                      .settle-diff-price{
+                        color: #bfbfbf;
+                        padding-right: 40rpx;
+                      }
+                      .btn-settle{
+                        width:180rpx;
+                        height: 80rpx;
+                        line-height: 80rpx;
+                        text-align: center;
+                        background-color: #ff6787;
+                        border-radius: 0 40rpx 40rpx 0;
+                      }
+                    }
+                    .store-close{
+                      width: 100%;
+                      height: 80rpx;
+                      line-height: 80rpx;
+                      color: #fff;
+                      text-align: center;
+                    }
                 }
-                .store-close{
-                  width: 100%;
-                  height: 80rpx;
-                  line-height: 80rpx;
-                  color: #fff;
-                  text-align: center;
+                 .car-box-settle{
+                    width: 90%;
+                    height: 0;
+                    background-color: #fff;
+                    bottom: 75rpx;
+                    z-index: 2;
+                    padding-bottom: 30rpx;
+                    transition: ease-in-out 0.2s;
+                   
+                    .car-box-header{
+                      padding: 5rpx 20rpx;
+                      height: 70rpx;
+                      align-items: center;
+                      justify-content: space-between;
+                      image{
+                        width: 33rpx;
+                        height: 29rpx;
+                      }
+                    }
+                    .car-box-c-main{
+                      overflow:scroll;
+                      height: 220rpx;
+                      &::-webkit-scrollbar {display:none}
+                      .car-box-content{
+                            margin: 30rpx 20rpx;
+                            align-items: center;
+                            justify-content: space-between;
+                        .car-box-l-content{
+                            flex: 1;
+                            margin-right: 20rpx;
+                            .car-title{
+                                color: #000;
+                            }
+                            .car-sku{
+                              padding-top: 10rpx;
+                              color: #8a8a8a;
+                            }
+                        }
+                        .car-box-r-content{
+                            align-items: center;
+                            .car-add{
+                              width: 41rpx;
+                              height: 41rpx;
+                              line-height: 38rpx;
+                              text-align: center;
+                              color: #ff6787;
+                              border:1px solid #ff6787;
+                              border-radius: 41rpx;
+                            }
+                            .car-num{
+                              padding: 0 20rpx;
+                            }
+                            .car-reduce{
+                              width: 45rpx;
+                              height: 45rpx;
+                              line-height: 45rpx;
+                              text-align: center;
+                              color: #fff;
+                              background-color:#ff6787;
+                              border-radius: 45rpx;
+                            }
+                        }
+                      }
+                    }
+                }
+                .car-box-show{
+                   height: 300rpx!important;
                 }
               }
             }
@@ -321,16 +410,18 @@
                 <view class="tradings-list sys-flex">
                     <block wx:for-items="{{tradingsList}}" wx:for-index="index" wx:for-item="item" wx:key="id">
                        <view class="tradings-item-main {{((index+1) % 2) ==0 ?'mr-0':''}}">
-                        <image src="{{item.src}}" mode="aspectFit"></image>
+                        <image src="{{item.src}}" mode="aspectFill"></image>
                         <view class="tradings-title f-11">{{item.title}}</view>
                         <view class="tradings-foot-main sys-flex">
                             <view class="tradings-price f-13">¥{{item.sku_price}}</view>
-                            <view class="tradings-btn  f-11" wx:if="{{storeInfo.setting.is_business}}" @tap="addCar({{item}})">加入购物车</view>
+                            <view class="tradings-btn  f-11" wx:if="{{storeInfo.setting.is_business && is_Login}}" @tap="addInitCar({{item}})">加入购物车</view>
+                            <button  class="tradings-btn  f-11" open-type="getUserInfo" @getuserinfo="getuserinfo" data-item="{{item}}"  wx:if="{{storeInfo.setting.is_business && !is_Login}}">加入购物车</button>
                             <view wx:else></view>
                         </view>
                       </view>
                     </block>
                 </view>
+                <!-- empty -->
                 <Empty wx:if="{{isEmpty}}"></Empty>
             </view>
              <view class="content-footer-main">
@@ -338,7 +429,7 @@
                     <view class="sku-toast-shade fixed" @tap="closeSkuModal" @touchmove.stop="touchmove" wx:if="{{showSkuModal}}"></view>
                     <view class="sku-toast-main fixed {{showSkuModal ? 'trans-rest-show':''}}">
                         <view class="tradings-info sys-flex">
-                            <image src="{{skuInfo.src}}" mode="aspectFit"></image>
+                            <image src="{{skuInfo.src}}" mode="aspectFill"></image>
                             <view class="tradings-r-info sys-flex-one">
                                 <view class="tradings-title f-18 font-weight-500">{{skuInfo.title}}</view>
                                 <view class="tradings-select-sku f-12">已选: {{matchSkuSpecs}}</view>
@@ -357,22 +448,47 @@
                     </view>
                 </view>
                 <!-- 营业中 加入购物车 -->
-                <view class="shopcar-settle fixed sys-flex" >
-                    <block wx:if="{{storeInfo.setting && storeInfo.setting.is_business}}">
-                      <image src="/static/images/car.png"/>
-                      <view class="settle-car-price sys-flex-one">
-                          <view class="settle-total-price f-16" wx:if="{{total_price}}">¥{{total_price}}</view>
-                          <view class="settle-delivery-price f-10">配送费¥{{storeInfo.setting.delivery_price}}</view>
+                <view class="shopcar-holder fixed">
+                       <view class="shopcar-settle  fixed sys-flex" >
+                          <block wx:if="{{storeInfo.setting && storeInfo.setting.is_business}}">
+                            <image src="/static/images/car.png" @tap="chooseCarbox"/>
+                            <view class="shopcar-num f-12 absolute" wx:if="{{total_num}}">{{total_num}}</view>
+                            <view class="settle-car-price sys-flex-one">
+                                <view class="settle-total-price f-16" wx:if="{{total_price}}">¥{{total_price}}</view>
+                                <view class="settle-delivery-price f-10">配送费¥{{storeInfo.setting.delivery_price}}</view>
+                            </view>
+                            <view class="settle-btn-main">
+                                <block wx:if="{{total_price > storeInfo.setting.start_delivery_price}}">
+                                  <view class="btn-settle f-16" wx:if="{{is_Login}}">去结算</view>
+                                  <button class="btn-settle f-16"  open-type="getUserInfo" @getuserinfo="getuserinfo" wx:else>去结算</button>
+                                </block>
+                                <view class="settle-diff-price f-16" wx:else>还差¥{{start_diff_delivery_price ? start_diff_delivery_price : storeInfo.setting.start_delivery_price}}起送</view>
+                            </view>
+                          </block>
+                          <block wx:else>
+                              <view class="store-close f-14">本店打烊啦~</view>
+                          </block>
                       </view>
-                      <view class="settle-btn-main">
-                          <view class="btn-settle f-16" wx:if="{{storeInfo.setting.delivery_price < start_diff_delivery_price}}">去结算</view>
-                          <view class="settle-diff-price f-16" wx:else>还差¥{{storeInfo.setting.delivery_price - start_diff_delivery_price}}起送</view>
+                      <view class="car-box-settle fixed {{car_box_status ? 'car-box-show':''}}">
+                          <view class="car-box-header sys-flex">
+                              <view class="f-14">已选</view>
+                              <image src="/static/images/clear.png"></image>
+                          </view>
+                          <view class="car-box-c-main">
+                              <view class="car-box-content sys-flex" wx:for-items="{{shopCarList}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+                                  <view class="car-box-l-content">
+                                      <view class="car-title f-13">{{item.title}}</view>
+                                      <view class="car-sku f-10">{{item.specs}}</view>
+                                  </view>
+                                <view class="car-box-r-content sys-flex">
+                                      <view class="car-reduce f-12" @tap="reduce({{item.sku_id}})">-</view>
+                                      <view class="f-13 car-num">{{item.num}}</view>
+                                      <view class="car-add f-12" @tap="add({{item.sku_id}})">+</view>
+                                </view>
+                              </view>
+                          </view>
                       </view>
-                    </block>
-                    <block wx:else>
-                        <view class="store-close f-14">本店打烊啦~</view>
-                    </block>
-                </view>
+                 </view>
             </view>
         </view>
     </view>
@@ -390,6 +506,9 @@ import * as ACTION from '@/store/actions'
   isEmpty (state) {
     return state.store_detail.isEmpty
   },
+  is_Login (state) {
+    return state.login.is_Login
+  },
   storeInfo (state) {
     return state.store_detail.storeInfo
   },
@@ -402,7 +521,10 @@ import * as ACTION from '@/store/actions'
 },{
   getStoreInfo:ACTION.getStoreInfo,
   getStoreTradings:ACTION.getStoreTradings,
-  getProductcategory:ACTION.getProductcategory
+  getProductcategory:ACTION.getProductcategory,
+  getuserinfos:ACTION.wxLogin,
+  addshopcar:ACTION.addshopcar,
+  reduceshopcar:ACTION.reduceshopcar
 })
 
 export default class Storedetail extends wepy.page{
@@ -430,9 +552,11 @@ export default class Storedetail extends wepy.page{
       skuInfo:null,
       showrestToast:true,
       showSkuModal: false,
-      start_diff_delivery_price:0,
+      start_diff_delivery_price:null,
       shopCarList:[], //购物车数据
-      total_price:0 //总金额
+      total_price:0, //总金额
+      total_num:0, //总数量
+      car_box_status:false, //购物车是否显示
     }
     computed = {
       // 是否禁止点击选择sku确认
@@ -441,7 +565,7 @@ export default class Storedetail extends wepy.page{
           let checkedCount = 0;
           let checked = true;
           skuAttr && skuAttr.forEach(element => {
-            element.value.forEach(item => {
+            element.value && element.value.forEach(item => {
                 if (item.checked) {
                     checkedCount++;
                 }
@@ -467,11 +591,67 @@ export default class Storedetail extends wepy.page{
       },
       // 关闭购物车modal
       closeSkuModal () {
-        this.closeSkuShowModal()
+        this.closeSkuShowModal();
       },
       touchmove () {return},
-      // 加入购物车
-      addCar (item) {
+      // 加车
+      add (sku_id) {
+        this.addShopCar(sku_id); //加入本地购物车
+      },
+      // 减车
+      reduce (sku_id) {
+        this.reduceShopCar(sku_id); //减去本地购物车
+      },
+      // 获取用户信息
+      getuserinfo (e) {
+        const { item } = e.currentTarget.dataset;
+        this.methods.getuserinfos(e).then((res)=>{
+            res.payload && this.initShopCar(item); // 加入购物车
+        })
+      },
+      // 加入初始化购物车
+      addInitCar (item) {
+        this.initShopCar(item);
+      },
+      // 规格操作
+      selectSku (item,index,vIndex) {
+        let skuAttr = this.skuInfo.skuAttr;
+        skuAttr[index].value.forEach((item,idx) => {
+          if (idx == vIndex) {
+            item.checked = !item.checked;
+          } else {
+            item.checked = 0;
+          }
+        });
+        this.skuInfo.skuAttr = skuAttr;
+        this.checkMatchSku();
+      },
+      // 提交选中的购物车
+      submitSkuCar () {
+        // 判断是否匹配到sku 
+        if (!this.selectSkuInfo) {
+          return wx.showToast({title:'sku无效',icon:'none'})
+        };
+        this.addShopCar(this.selectSkuInfo._id); //加入购物车
+        this.closeSkuShowModal(); //关闭弹窗
+      },
+      // 购物车上下折叠
+      chooseCarbox () {
+        this.car_box_status = !this.car_box_status;
+      }
+    }
+    onLoad (options) {
+      this._id = options._id;
+      this.init(); //初始化 商店信息 分类信息 商品信息
+    }
+    init () {
+       this.showrestToast = true;
+       this.getStoreInfo(); //获取店铺信息
+       this.getProductcategory(); //获取分类信息
+       this.getStoreTradings(); ///获取商品信息
+    }
+    // 初始化购物车
+    initShopCar (item) {
         this.showSkuModal = true;
         let attrList = [];
         item.attribute_list.forEach((AttrItem,idx) => {
@@ -493,39 +673,7 @@ export default class Storedetail extends wepy.page{
           skuList:item.sku
         }
         this.checkMatchSku()
-      },
-      // 规格操作
-      selectSku (item,index,vIndex) {
-        let skuAttr = this.skuInfo.skuAttr;
-        skuAttr[index].value.forEach((item,idx) => {
-          if (idx == vIndex) {
-            item.checked = !item.checked;
-          } else {
-            item.checked = 0;
-          }
-        });
-        this.skuInfo.skuAttr = skuAttr;
-        this.checkMatchSku()
-      },
-      // 提交选中的购物车
-      submitSkuCar () {
-        // 判断是否匹配到sku 
-        if (!this.selectSkuInfo) {
-          return wx.showToast({title:'sku无效',icon:'none'})
-        };
-        this.joinShopCar(); //加入购物车
-        this.closeSkuShowModal(); //关闭弹窗
-      }
-    }
-    onLoad (options) {
-      this._id = options._id;
-      this.init();
-      console.log(MathFool,'Math')
-    }
-    init () {
-       this.getStoreInfo();
-       this.getProductcategory();
-       this.getStoreTradings();
+        this.$apply();
     }
     // 匹配sku值
     checkMatchSku () {
@@ -542,28 +690,67 @@ export default class Storedetail extends wepy.page{
         let [selectSkuInfo] = this.skuInfo && this.skuInfo.skuList.filter(item=>item.specs == matchSkuSpecs) ||[];
         this.selectSkuInfo = selectSkuInfo;
     }
+    // 关闭sku弹窗
     closeSkuShowModal () {
         this.showSkuModal = false;
     }
-    joinShopCar () {
+    // 加入购物车
+    addShopCar (sku_id) {
       let isExist = false;
+      let isMax = false;
+      let price = this.selectSkuInfo.price; //当前列项价格
       this.shopCarList.length && this.shopCarList.forEach(item => {
-          if (item.sku_id == this.selectSkuInfo._id) {
-              item.num +=1; 
-              isExist = true;
+          if (item.sku_id == sku_id) {
+             if (item.num<this.selectSkuInfo.num) {
+                item.num +=1; 
+                price = item.price; //价格
+                isExist = true;
+             } else {
+                isMax = true;
+             }
+             
           }
       });
+      // 判断是否超过库存
+      if (isMax)return wx.showToast({title: '不能超过最大库存哦😯',icon: 'none'});
       !isExist && this.shopCarList.push({
+        title:this.skuInfo.title,
+        specs:this.selectSkuInfo.specs,
         sku_id: this.selectSkuInfo._id,
+        price:this.selectSkuInfo.price,
         num: 1,
       })
-      this.total_price = MathFool.add(this.total_price,this.selectSkuInfo.price) //总价
-      this.start_diff_delivery_price = MathFool.add(this.start_diff_delivery_price,this.selectSkuInfo.price) //起送价比对
-      console.log(this.shopCarList,'this.shopCarList')
+      // 计算总数
+      this.total_num = this.shopCarList.reduce((total,item)=>(total + item.num),0);
+      this.total_price = MathFool.add(this.total_price,price) //总价
+      this.start_diff_delivery_price = MathFool.sub(this.storeInfo.setting.start_delivery_price,this.total_price) //起送价比对
+      this.methods.addshopcar({_id: this._id,sku_id:sku_id}) //提交购物车
     }
+     // 减去购物车
+    reduceShopCar (sku_id) {
+      let iszero = false;
+      let price = this.selectSkuInfo.price; //当前列项价格
+      let [currentCar] = this.shopCarList.filter(item=>item.sku_id==sku_id);
+      if (currentCar.num<=0)return wx.showToast({title: '不能再减了',icon: 'none'});
+      this.shopCarList.length && this.shopCarList.forEach((item,index) => {
+          if (item.sku_id == sku_id) {
+                price = item.price
+                if (item.num<=1) {
+                   this.shopCarList.splice(index,1)
+                }
+                item.num -=1; 
+          } 
+      });
+      // 计算总数
+      this.total_num = this.shopCarList.reduce((total,item)=>(total + item.num),0);
+      this.total_price = Math.max(0,MathFool.sub(this.total_price,price)) //总价
+      this.start_diff_delivery_price = MathFool.sub(this.storeInfo.setting.start_delivery_price,this.total_price) //起送价比对
+      this.methods.reduceshopcar({_id: this._id,sku_id:sku_id}) //提交购物车
+    }
+    /* 获取店铺*/ 
     getStoreInfo () {
       this.methods.getStoreInfo({_id: this._id }).then(()=>{
-          wx.setNavigationBarTitle({
+          wx.setNavigationBarTitle({ //设置顶栏标题 
             title: this.storeInfo.title
           })
        })

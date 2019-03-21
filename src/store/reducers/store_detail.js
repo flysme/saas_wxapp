@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import { GETSTORETRADINGS, GETSTORETRADINGSCATEGORY,GETSTOREINFO } from '../types/store_detail'
+import { GETSTORETRADINGS, GETSTORETRADINGSCATEGORY,GETSTOREINFO, WEIXINLOADUSERINFO, ADDSHOPCAR, REDUCESHOPCAR } from '../types/store_detail'
 import  config from '@/config/index'
 const utils = {
   resetStoreData (tradingsList) {
@@ -42,8 +42,25 @@ export default handleActions({
       ...state,
       storeInfo:action.payload
     }
+  },
+  [WEIXINLOADUSERINFO] (state,action) {
+    return {
+      ...state,
+      userInfo:action.payload
+    }
+  },
+  [ADDSHOPCAR] (state,action) {
+    return {
+      ...state
+    }
+  },
+  [REDUCESHOPCAR] (state,action) {
+    return {
+      ...state
+    }
   }
 }, {
+  userInfo:{},
   tradingsList: [],
   isEmpty:true,
   storeInfo:null,

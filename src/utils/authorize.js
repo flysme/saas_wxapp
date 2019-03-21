@@ -3,12 +3,13 @@ const setting = {
     return new Promise ((resolve,reject)=>{
       wx.getSetting({
         success(res) {
-          console.log(res.authSetting,'res.authSetting')
           if (res.authSetting && res.authSetting[scope]==null) {
             setting.authorize(scope).then(()=>{
+              console.log('授权-----1')
               wx.showToast({title: '授权成功！', icon: 'none'})
               resolve()
             }).catch(()=>{
+              console.log('授权-----2');
               wx.showToast({title: '授权失败！', icon: 'none'})
               reject();
             })
@@ -46,12 +47,8 @@ const setting = {
     return new Promise((resolve,reject)=>{
       wx.authorize({
         scope,
-        success(res) {
-          if (res.authSetting && res.authSetting[scope]) {
+        success() {
             resolve();
-          } else {
-            reject();
-          }
         },
         fail (err) {
           reject(err);

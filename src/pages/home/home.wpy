@@ -94,7 +94,7 @@ export default class Home extends wepy.page{
     }
     methods = {
       toStoreDetail (item) {
-        console.log(item,'--item--toStoreDetail')
+        console.log(item,'--item--')
         wx.navigateTo({
           url: '/pages/store_detail/store_detail?_id=' + item._id,
         })
@@ -106,9 +106,11 @@ export default class Home extends wepy.page{
     onLoad () {
       this.getUserLocaltion();
     }
+    // 获取店铺列表
     getStoreList () {
        this.methods.getStoreList();
     }
+    // 获取用户位置信息
     getUserLocaltion () {
        this.methods.getUserLocaltion().then(({payload})=>{
          this.getStoreList();

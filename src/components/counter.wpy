@@ -42,7 +42,7 @@
   }, {
     incNum: INCREMENT,
     decNum: DECREMENT,
-    // asyncInc
+    asyncInc
   })
 
   export default class Counter extends wepy.component {

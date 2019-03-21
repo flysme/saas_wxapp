@@ -42,7 +42,14 @@
 					"id": 1,
 					"name": "店铺首页",
 					"pathName": "pages/store_detail/store_detail",
-					"query": "_id=1764D142FDA697DB689C9C97C4DFCCAC",
+					"query": "_id= E78E6D46C6238A70CA2C3EDD50B9D912",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "登录",
+					"pathName": "pages/login/login",
+					"query": "",
 					"scene": null
 				}
 			]

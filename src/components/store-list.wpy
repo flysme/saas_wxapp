@@ -87,11 +87,11 @@
                   <view class="store-deliverys-price sys-flex-one">配送: ¥{{item.setting.delivery_price}}</view>
                   <view class="store-delivery-way f-11">{{item.delivery_info.way ? '商家配送':'平台配送'}}</view>
               </view>
-              <view class="store-info  sys-flex">
+              <!-- <view class="store-info  sys-flex">
                   <view class="store-notice-rules sys-flex f-11" wx:for-items="{{item.setting.discounts}}" wx:for-index="index" wx:for-item="setting_item" wx:key="index">
                     满{{setting_item.buy_price}}减{{setting_item.discount_price}}
                   </view>
-              </view>
+              </view> -->
           </view>
           <!-- 是否营业shade -->
           <view class="business-main-card absolute" wx:if="{{!item.setting.is_business}}"></view>

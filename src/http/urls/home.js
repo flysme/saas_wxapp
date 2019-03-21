@@ -1,6 +1,6 @@
 const home = {
-  getStoreList:'getStoreList.php',
-  getUserLocaltion:'getUserLocaltion.php'
+  getStoreList:'getStoreList',
+  getUserLocaltion:'getUserLocaltion'
 }
 
 export default home;

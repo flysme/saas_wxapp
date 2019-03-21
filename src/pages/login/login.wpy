@@ -1,0 +1,42 @@
+<style lang="scss">
+  .login {
+    height: 100vh;
+    background-color: #fff;
+    overflow: hidden;
+    button {
+      margin:260rpx auto;
+      width: 300rpx;
+      height: 70rpx;
+      line-height: 70rpx;
+      border-radius: 10rpx;
+      background-color: #09bb07;
+      color: #fff;
+      text-align: center;
+      outline: none;
+      &::after {
+        border: none
+      }
+    }
+  }
+</style>
+<template>
+  <view class="login">
+      <button open-type="getUserInfo" class='f-14' @getuserinfo="wxLogin">微信登录</button>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import { connect } from 'wepy-redux'
+  import * as ACTION from '@/store/actions'
+  @connect({},{
+  wxLogin:ACTION.wxLogin,
+})
+  export default class Login extends wepy.page {
+      config = {
+        navigationBarTitleText: '登录'
+      }
+      onLoad () {
+        
+      }
+  }
+</script>
