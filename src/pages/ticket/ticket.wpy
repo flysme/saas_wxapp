@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-04 18:24:19
- * @LastEditTime: 2019-04-12 18:12:01
+ * @LastEditTime: 2019-04-12 18:20:39
  -->
 <style lang="scss">
 .ticket{
@@ -271,9 +271,9 @@
       origindata = {
         allticketList:[]
       }
-      onLoad () {
+      onShow () {
         this.getTicket();
-        this.setnavTitle();
+        this.setnavTitle(); 
         this.methods.initbtnstatus(); //初始化上一天按钮是否可用
       }
       methods = {
