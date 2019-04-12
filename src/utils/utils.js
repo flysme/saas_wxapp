@@ -1,3 +1,12 @@
+/*
+ * @Description: 
+ * @Author: zhaofeixiang
+ * @LastEditors: zhaofeixiang
+ * @Date: 2019-03-13 15:50:17
+ * @LastEditTime: 2019-04-12 11:58:27
+ */
+import wepy from 'wepy'
+
 const UTILS = {
    /**
      *@method缓存方法
@@ -26,6 +35,25 @@ const UTILS = {
       remove (key) {
           wx.removeStorageSync(key);
       }
+  },
+  /**
+   * 获取当前日期
+   * @params nowTimestamp 传入时间戳
+   * @return ex: 2019-04-09
+   */
+  getCurrentDate (nowTimestamp) {
+    const date = nowTimestamp ? new Date(nowTimestamp) : new Date();
+    const year = date.getFullYear();
+    const now_month = date.getMonth() + 1; //当前月
+    const currentDay = date.getDate(); //当前日 
+    return `${year}-${String(now_month).padStart(2,'0')}-${String(currentDay).padStart(2,'0')}`
+  },
+  /**
+   * 匹配ios时间格式
+   */
+  resetnewDate  (yyyy_mm_dd) {
+    const curr_date = yyyy_mm_dd && wepy.$instance.globalData.checkIsIOS ? yyyy_mm_dd.replace(/\-/g, '/') : yyyy_mm_dd;
+     return yyyy_mm_dd ? (new Date(curr_date)) : (new Date());
   }
 }
 export default UTILS

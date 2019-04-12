@@ -1,0 +1,349 @@
+<!--
+ * @Description: 
+ * @Author: zhaofeixiang
+ * @LastEditors: zhaofeixiang
+ * @Date: 2019-04-04 18:24:19
+ * @LastEditTime: 2019-04-12 18:12:01
+ -->
+<style lang="scss">
+.ticket{
+  padding-bottom: 20rpx;
+  .nav-header{
+    width: 100%;
+    height: 98rpx;
+    line-height: 98rpx;
+    background-color: #f44444;
+    justify-content: space-between;
+    align-items: center;
+    padding:0 20rpx;
+    box-sizing: border-box;
+    top: 0;
+    left: 0;
+    .previous-day{
+      height: 98rpx;
+      line-height: 98rpx;
+      align-items: center;
+      color: #fff;
+      &>image{
+        width: 30rpx;
+        height: 30rpx;
+      }
+    }
+    .choose-date{
+      width: 200rpx;
+      height: 50rpx;
+      line-height: 50rpx;
+      border-radius: 25rpx;
+      background-color: rgba($color: #fff, $alpha: .6);
+      color: #333;
+      text-align: center;
+    }
+    .next-day{
+      height: 98rpx;
+      line-height: 98rpx;
+      align-items: center;
+      justify-content: flex-end;
+      color: #fff;
+      &>image{
+        width: 30rpx;
+        height: 30rpx;
+        
+      }
+    }
+  }
+  .empty-text{
+      margin: 100rpx auto;
+      text-align: center;
+  }
+  .ticket-main{
+    margin-top: 118rpx;
+      .ticket-item{
+        padding: 20rpx 30rpx;
+        height: 200rpx;
+        box-sizing: border-box;
+        background-color: #fff;
+        margin: 20rpx;
+        border-radius:15rpx;
+        flex-direction:column;
+        justify-content:space-between;
+        .ticket-t-item{
+           justify-content: space-between;
+          .ticket-t-l-item{
+            width: 70%;
+            justify-content: space-between;
+            .start-stations{
+              .start-time{
+                color: #fc6954;
+              }
+              .start-station-name{
+                color: #9d9d9d;
+              }
+            }
+            .use-time{
+              color: #8b8b8b;
+              .train-number{
+                text-align: center;
+              }
+              .train-link-line{
+                align-items: center;
+                width: 100%;
+                height: 20rpx;
+                .train-l-circle{
+                  width: 5rpx;
+                  height: 5rpx;
+                  border: 1px solid #ccc;
+                  border-radius: 5rpx;
+                }
+                .train-c-line{
+                  width: 88%;
+                  border-bottom: 1px solid #ccc;
+                }
+                .train-r-circle{
+                  width: 5rpx;
+                  height: 5rpx;
+                  border: 1px solid #ccc;
+                  border-radius: 5rpx;
+                }
+              }
+            }
+            .end-stations{
+              .end-station-name{
+                color: #9d9d9d;
+                text-align: right;
+              }
+            }
+          }
+          .ticket-t-r-item{
+            min-width: 15%;
+            margin-left: 5%;
+            .ticket-price{
+              color: #fc6954;
+              text-align: right;
+            }
+            .train-stop-text{
+              padding-top: 20rpx;
+              color: #333;
+            }
+            .btn-subscribe{
+              height: 30rpx;
+              border-radius: 15rpx;
+              text-align: center;
+              line-height: 31rpx;
+              color: #fff;
+              background-color: #fc6954;
+              padding: 7rpx 10rpx;
+              margin:8px 0 0 25px;
+            }
+          }
+        }
+        .ticket-b-main-item{
+          align-items: center;
+          .ticket-b-item{
+            width: fit-content;
+            justify-content: center;
+            display: flex;
+            justify-content: flex-start;
+            color:999;
+            &:last-child{
+              padding: 0;
+            }
+            .ticket-empty-seat{
+              color: #ccc;
+              &>text{
+                color: #fc6954;
+              }
+            }
+          }
+        }
+    }
+  }
+}
+  
+</style>
+<template>
+  <view class="ticket">
+      <view class="fixed nav-header sys-flex">
+          <view class="previous-day sys-flex sys-flex-one" @tap="setPreviousDay">
+              <image src="/static/images/arrow-left.png"></image>
+              <text class="f-14">前一天</text>
+          </view>
+          <view class="choose-date f-13" @tap="chooseDate">{{show_date}}</view>
+          <view class="next-day sys-flex sys-flex-one" @tap="setNextDay">
+              <text class="f-14">后一天</text>
+              <image src="/static/images/arrow-right.png"></image>
+          </view>
+      </view>
+      <view  wx:if="{{is_Empty}}" class="empty-text f-15">很抱歉，暂无此车次的信息</view>
+      <view wx:else class="ticket-main">
+          <view class="ticket-item sys-flex" wx:for-items="{{ticketList}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+              <view class="ticket-t-item sys-flex">
+                  <view class="ticket-t-l-item sys-flex">
+                      <view class="start-stations">
+                          <view class="start-time f-21 font-weight-500">{{item.seatDesc.length ? item.departDepartTime : '--:--'}}</view>
+                          <view class="start-station-name f-12">{{item.departStationName}}</view>
+                      </view>
+                      <view class="use-time">
+                          <view class="train-number f-11">{{item.trainNum}}</view>
+                          <view class="train-link-line sys-flex">
+                              <view class="train-l-circle"></view>
+                              <view class="train-c-line"></view>
+                              <view class="train-r-circle"></view>
+                          </view>
+                          <view class="train-time f-11">{{item.seatDesc.length ? item.duration : ''}}</view>
+                      </view>
+                      <view class="end-stations">
+                          <view class="end-time f-21 font-weight-500">{{item.seatDesc.length ? item.destArriveTime : '--:--'}}</view>
+                          <view class="end-station-name f-12">{{item.destStationName}}</view>
+                      </view>
+                  </view>
+                  <view class="ticket-t-r-item">
+                      <block wx:if="{{item.seatDesc.length}}">
+                        <view class="ticket-price">
+                            <text class="f-14">￥</text>
+                            <text class="f-21 font-weight-500">{{item.min_price || item.price}}</text>
+                        </view>
+                        <view class="btn-subscribe f-10" wx:if="{{!item.seat_num}}">去监控</view>
+                      </block>
+                      <block wx:else>
+                        <text class="f-12 train-stop-text">列车停运</text>
+                      </block>
+                  </view>
+              </view>
+              <view class="f-11 sys-flex ticket-b-main-item">
+                <block  wx:if="{{item.seat_num}}">
+                   <view class="ticket-b-item sys-flex sys-flex-one" wx:for-items="{{item.seatDesc}}" wx:for-index="idx" wx:for-item="seat_item" wx:key="id">
+                      <block>
+                        <block wx:if="{{seat_item}}"> 
+                            <view wx:if="{{seat_item.leftNumber>0}}">{{seat_item.seatName}}{{seat_item.seatId==1 || seat_item.seatId==2 || seat_item.seatId==3 ?'座':''}}{{seat_item.leftNumber}}张</view>
+                          <view wx:else class="ticket-empty-seat">{{seat_item.seatName}}{{seat_item.seatId==1 || seat_item.seatId==2 || seat_item.seatId==3 ?'座':''}}0张<text>(监)</text></view>
+                        </block>
+                          <view wx:else></view>
+                      </block>
+                  </view>
+                </block>
+                <block  wx:else>
+                    <text class="f-11" wx:if="{{item.seatDesc.length}}">暂无余票 、建议去监控</text>
+                </block>
+              </view>
+          </view>
+      </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import { connect } from 'wepy-redux'
+  import * as ACTION from '@/store/actions'
+  import { GETPREVIOUSDAY,GETNEXTDAY,INITBTNSTATUS } from '../../store/types/ticket'
+  @connect({
+    startStation (state) {
+      return state.ticket.startStation
+    },
+    arriveStation (state) {
+      return state.ticket.arriveStation
+    },
+    train_date (state) {
+      return state.ticket.train_date
+    },
+    show_date (state) {
+          const week = ['日','一','二','三','四','五','六'];
+          const date = new Date(state.ticket.train_date);
+          return `${date.getMonth()+1}月${date.getDate()}号 周${week[date.getDay()]}`;
+    },
+    btn_pre_status (state) {
+      return state.ticket.btn_pre_status
+    }
+  },{
+  getTicket:ACTION.getTicket,
+  getPreviousDay:GETPREVIOUSDAY,
+  getNextDay:GETNEXTDAY,
+  initbtnstatus:INITBTNSTATUS,
+})
+  export default class Tickets extends wepy.page {
+      config = {
+        navigationBarTitleText: '票务查询',
+        navigationBarTextStyle:'white',
+        navigationBarBackgroundColor: "#f44444",
+      }
+      data = {
+        ticketList:[],
+        is_Empty:false,
+      }
+      origindata = {
+        allticketList:[]
+      }
+      onLoad () {
+        this.getTicket();
+        this.setnavTitle();
+        this.methods.initbtnstatus(); //初始化上一天按钮是否可用
+      }
+      methods = {
+        chooseDate () {
+              wx.navigateTo({url: `../choose_date/choose_date`})
+        },
+        setPreviousDay () {
+          if (!this.btn_pre_status)return;
+          this.ticketList = [];
+          this.methods.getPreviousDay();
+          this.getTicket();
+        },
+        setNextDay () {
+          this.ticketList = [];
+          this.methods.getNextDay();
+          this.getTicket();
+        }
+      }
+      setnavTitle () {
+        wx.setNavigationBarTitle({
+          title: `${this.startStation.name}-${this.arriveStation.name}`
+        })
+      }
+      getTicket () {
+       this.methods.getTicket({
+          fromCityname:this.startStation.name,
+          from_station_id:this.startStation.station_id,
+          fromCitycode:this.startStation.code,
+          toCityname:this.arriveStation.name,
+          to_station_id:this.arriveStation.station_id,
+          to_station:this.arriveStation.code,
+          date:this.train_date
+       }).then(action=>{
+         this.origindata.allticketList = action.payload;
+         const offset = this.origindata.allticketList.length > 10 ? 10 : this.origindata.allticketList.length;
+         this.ticketList = this.resetTicket(this.origindata.allticketList.splice(0,offset));
+         this.is_Empty = this.ticketList.length ? false :true
+         wx.hideLoading()
+         this.$apply();
+       }).catch(()=>{
+         this.is_Empty = true
+         wx.hideLoading()
+         this.$apply();
+       });
+      }
+      resetTicket (data) {
+        let newTicketList = [];
+
+        for(let i = 0,len= data.length; i < len; i++) {
+          let min_price = [];
+          data[i].seat_num = 0;
+          for (let j=0,currentlength = data[i].seatDesc.length; j < currentlength; j++) {
+            data[i].seat_num += data[i].seatDesc[j].leftNumber;
+            data[i].seatDesc[j].leftNumber && min_price.push(data[i].seatDesc[j].adultPrice);
+          }
+          const minLen = Math.max(data[i].seatDesc.length,4);
+          const redLen = data[i].seatDesc.length ? new Array(minLen - data[i].seatDesc.length) : [];
+          data[i].seatDesc = [].concat(data[i].seatDesc,redLen);
+          data[i].min_price = Math.min(...min_price)
+          newTicketList.push(data[i]);
+        }
+        return newTicketList;
+      }
+      onReachBottom () {
+        const offset = this.origindata.allticketList.length > 10 ? 10 : this.origindata.allticketList.length;
+        const fragticketList = this.resetTicket(this.origindata.allticketList.splice(0,offset));
+        this.ticketList = [].concat(this.ticketList,fragticketList);
+      }
+      onPullDownRefresh () {
+       this.getTicket();
+      }
+  }
+</script>

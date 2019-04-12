@@ -1,3 +1,10 @@
+<!--
+ * @Description: 
+ * @Author: zhaofeixiang
+ * @LastEditors: zhaofeixiang
+ * @Date: 2019-03-01 18:06:22
+ * @LastEditTime: 2019-04-09 14:57:59
+ -->
 <style lang="less">
 page{
   background-color: #efefef;
@@ -11,7 +18,7 @@ page{
   box-sizing: border-box;
 }
 
-@for $i from 7 through 18 {
+@for $i from 7 through 24 {
   .f-#{$i} { font-size: 2rpx * $i; }
 }
 
@@ -56,6 +63,10 @@ setStore(store)
 export default class extends wepy.app {
   config = {
     pages: [
+      'pages/select_ticket/select_ticket',
+      'pages/choose_date/choose_date',
+      'pages/ticket/ticket',
+      'pages/choose_city/choose_city',
       'pages/home/home',
       'pages/store_detail/store_detail',
       'pages/login/login',
@@ -77,6 +88,7 @@ export default class extends wepy.app {
 
   globalData = {
     userInfo: null,
+    checkIsIOS:false,
     is_Login:false
   }
 
@@ -87,6 +99,7 @@ export default class extends wepy.app {
 
   onLaunch() {
     // this.testAsync()
+    this.globalData.checkIsIOS = wx.getSystemInfoSync().system.indexOf('iOS') > -1;
     this.checkSession(); //检查session是否过期
   }
   checkSession () {

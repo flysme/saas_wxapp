@@ -1,0 +1,202 @@
+<!--
+ * @Description: 
+ * @Author: zhaofeixiang
+ * @LastEditors: zhaofeixiang
+ * @Date: 2019-04-04 18:24:19
+ * @LastEditTime: 2019-04-12 16:53:37
+ -->
+<style lang="scss">
+   .select-ticket{
+       margin-top: 100rpx;
+       height: 100vh;
+       border-radius: 20rpx 20rpx 0 0rpx;
+       background-color: #fff;
+       padding: 50rpx 30rpx;
+       .select-stations{
+           height: 100rpx;
+           justify-content: space-between;
+           .start-stations{
+               text-align: left;
+               border-bottom: 1px solid #f7f7f7;
+           }
+           .select-trans-icon{
+               width: 60rpx;
+               height: 60rpx;
+               margin: 0 10rpx;
+               &>image{
+                   width: 50rpx;
+                   height: 50rpx;
+               }
+           }
+           .end-tations{
+               justify-content: flex-end;
+               border-bottom: 1px solid #f7f7f7;
+           }
+           .station-box{
+               width: fit-content;
+           }
+       }
+       .select-date{
+           height: 100rpx;
+           line-height: 100rpx;
+           border-bottom: 1px solid #f7f7f7;
+       }
+       .select-ticket-mold{
+           margin-top: 20rpx;
+           .checkbox{
+               align-items: center;
+           }
+       }
+       button{
+           margin-top: 20rpx;
+           line-height: 88rpx;
+           height:88rpx;
+           color: #fff;
+           background:linear-gradient(to right,#ff8222,#f44444);
+
+       }
+       /* checkbox未选中时样式 */
+       checkbox .wx-checkbox-input{
+            border-radius: 26rpx;
+            height: 26rpx;
+            width: 26rpx;
+            margin-top: -4rpx;
+        /* 自定义样式.... */
+       }
+       checkbox .wx-checkbox-input.wx-checkbox-input-checked::before{
+           font-size: 28rpx;
+           color: #fe8a22;
+       }
+   }
+</style>
+<template>
+  <view class="select-ticket">
+      <view class="select-stations sys-flex font-weight-500">
+            <view class="start-stations f-21 sys-flex-one">
+                <view class="station-box start-box" animation="{{animatestart}}" @tap="chooseCitys({{'start'}})">{{startStation.name}}</view>
+            </view>
+             <view class="select-trans-icon" @tap="transStations">
+                 <image src="/static/images/trans.png" mode="aspectFill" animation="{{animaterotate}}"/>
+             </view>
+             <view class="end-tations f-21 sys-flex-one sys-flex">
+                 <view class="station-box end-box" animation="{{animateend}}" @tap="chooseCitys({{'arrive'}})">{{arriveStation.name}}</view>
+             </view>
+      </view>
+      <view class="select-date f-21 font-weight-500" @tap="chooseDate">
+          <text>{{show_date}}</text>
+      </view>
+      <view class="select-ticket-mold f-19 sys-flex">
+          <checkbox-group @change="checkboxChange">
+            <label class="checkbox sys-flex" wx:for-items="{{ticket_mold}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+                <checkbox value="{{item.name}}" checked="{{item.checked}}"/>
+                <view class="f-12">{{item.value}}</view>
+            </label>
+          </checkbox-group>
+      </view>
+      <button class="f-16" @tap="searchTicket">查询</button>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import { connect } from 'wepy-redux'
+  import * as ACTION from '@/store/actions'
+  import { CHANGECITYORDER } from '../../store/types/ticket'
+  @connect({
+      startStation (state) {
+          return state.ticket.startStation
+      },
+      arriveStation (state) {
+          return state.ticket.arriveStation
+      },
+      select_date (state) {
+          return state.ticket.select_date
+      },
+      show_date (state) {
+          const week = ['日','一','二','三','四','五','六'];
+          const date = new Date(state.ticket.train_date);
+          return `${date.getMonth()+1}月${date.getDate()}号 周${week[date.getDay()]}`;
+      }
+  },{
+  getStationCode:ACTION.getStationCode,
+  changeCityOrder:CHANGECITYORDER,
+})
+  export default class Selectticket extends wepy.page {
+      config = {
+        navigationBarTitleText: '票务查询'
+      }
+      data = {
+          ticket_mold:[
+              {
+                  value:'学生票',
+                  name:'1',
+                  checked:false
+              }
+          ],
+          animatestart:{},
+          animateend:{},
+          animaterotate:{},
+          animation:null
+      }
+      onLoad (options) {
+        this.initAnimations();
+      }
+      onShow () {
+
+      }
+      initAnimations () {
+           const animation1 = wx.createAnimation({
+            duration: 300,
+            timingFunction: 'ease',
+           })
+           const animation2 = wx.createAnimation({
+            duration: 300,
+            timingFunction: 'ease',
+           })
+           const animation3 = wx.createAnimation({
+            duration: 400,
+            timingFunction: 'ease',
+           })
+           this.animation1 = animation1;
+           this.animation2 = animation2;
+           this.animation3 = animation3;
+           this.animatestart = this.animation1.export();
+           this.animateend = this.animation2.export();
+           this.animaterotate = this.animation3.export();
+           this.rotate = 0;
+      }
+      getStationCode () {
+          this.methods.getStationCode();
+      }
+      methods = {
+          chooseDate () {
+              wx.navigateTo({url: `../choose_date/choose_date`})
+          },
+          chooseCitys (status) {
+              wx.navigateTo({url: `../choose_city/choose_city?status=${status}`})
+          },
+          searchTicket () {
+              wx.navigateTo({url: `../ticket/ticket`})
+          },
+          checkboxChange () {
+              console.log('xx')
+          },
+          transStations () {
+              const anione =  this.animation1.translateX(120).opacity(0).step();
+              const anitwo =  this.animation2.translateX(-120).opacity(0).step();
+              const anithree = this.animation3.rotate(this.rotate == 0 ? 180 : 0).step();
+              this.rotate = this.rotate == 0 ? 180 :0;
+              this.animatestart = anione.export();
+              this.animateend = anitwo.export();
+              this.animaterotate = anithree.export();
+              this.methods.changeCityOrder();
+            setTimeout(()=>{
+              const secondanione =  this.animation1.opacity(1).translateX(0).step();
+              const secondanitwo =  this.animation2.opacity(1).translateX(0).step();
+              this.animatestart = secondanione.export();
+              this.animateend = secondanitwo.export();
+              this.$apply();
+            },300)
+          }
+      }
+  }
+</script>

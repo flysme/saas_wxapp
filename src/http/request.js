@@ -1,12 +1,22 @@
+/*
+ * @Description: 
+ * @Author: zhaofeixiang
+ * @LastEditors: zhaofeixiang
+ * @Date: 2019-03-05 10:00:01
+ * @LastEditTime: 2019-04-12 18:17:21
+ */
 import wepy from 'wepy'
 import  UTILS from '@/utils/utils' // 本地缓存
 
 // 设置全局请求头
 const headers = {
-  'content-type':'application/json'
+  'content-type':'application/json',
 }
 // 设置全局host
-const host= 'https://20130510.cn/api/';
+// const host= 'https://20130510.cn/api/';
+
+const host= 'https://api.20130510.cn/api/v1';
+
 // const host= 'http://www.vuetext.com:8083/api/';
 
 const serializeUrl = (data)=>{

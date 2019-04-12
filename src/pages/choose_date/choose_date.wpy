@@ -1,0 +1,175 @@
+<!--
+ * @Description: 
+ * @Author: zhaofeixiang
+ * @LastEditors: zhaofeixiang
+ * @Date: 2019-04-04 18:24:19
+ * @LastEditTime: 2019-04-12 17:20:02
+ -->
+<style lang="scss">
+  .date-main{
+    .week-list{
+      padding: 0 5rpx;
+      height:80rpx;
+      line-height: 80rpx;
+      background-color: #fff;
+      .week-item{
+        text-align: center;
+      }
+    }
+    .date-view{
+      padding: 10rpx 5rpx;
+      background-color: #fff;
+      .month-title{
+        text-align: center;
+        padding:10rpx;
+      }
+      .month-main{
+        margin-top: 10rpx;
+        .month-item{
+          display: inline-block;
+          vertical-align: top;
+          width: calc( (100% - 10rpx) / 7 );
+          height: 100rpx;
+          margin-bottom: 20rpx;
+          .solar-calendar-date{
+            text-align: center;
+          }
+          .lunar-calendar-date{
+            text-align: center;
+            color: #ccc;
+          }
+          .set-ticket-tip{
+            text-align: center;
+            color: #f44444;
+          }
+          .active-lunar-calendar{
+            color: #fff;
+          }
+          
+        }
+        .disabled{
+            color: #ccc;
+        }
+        .active{
+          background-color: #f44444;
+          border-radius: 5rpx;
+          color: #fff!important;
+        }
+      }
+    }
+
+  }
+</style>
+<template>
+  <view class="date-main">
+      <view class="week-list sys-flex f-14">
+          <view class="week-item sys-flex-one" wx:for-items="{{dateList}}" wx:for-item="item" wx:key="index">{{item}}</view>
+      </view>
+      <view class="date-view">
+             <view class="month-view" wx:for-items="{{monthList}}" wx:for-item="item" wx:key="monthindex" wx:for-index="monthindex">
+                <view class="month-title font-weight-500 f-15">{{item.key}}</view>
+                <view class="month-main">
+                    <view class="month-item {{currentitem.disabled ?'disabled':''}} {{currentitem.date == select_date ? 'active' :''}}" wx:for-items="{{item.value}}" wx:for-item="currentitem" wx:key="index" @tap="chooseTrainDate({{monthindex}},{{currentitem}})">
+                        <block>
+                            <view class="solar-calendar-date font-weight-500 f-16">{{currentitem.day}}</view>
+                            <view class="set-ticket-tip f-12 {{currentitem.date == select_date ? 'active-lunar-calendar':''}}" wx:if="{{currentitem.lunarday && !currentitem.can_sales && !currentitem.disabled}}">可预约</view>
+                            <view class="lunar-calendar-date f-12 {{currentitem.date == select_date ? 'active-lunar-calendar':''}}" wx:else>{{currentitem.lunarday}}</view>
+                        </block>
+                    </view>
+                </view>
+             </view>
+      </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import { connect } from 'wepy-redux'
+  import * as ACTION from '@/store/actions'
+  import { CHOOSEDATE } from '../../store/types/ticket'
+  import GetLunarDay from '@/utils/date';
+  import UTILS from '@/utils/utils';
+    @connect({
+      select_date (state) {
+        return state.ticket.train_date
+      },
+    },{
+    getStationCode:ACTION.getStationCode,
+    chooseDate:CHOOSEDATE
+  })
+  export default class Dates extends wepy.page {
+      config = {
+        navigationBarTitleText: '选择出行日期'
+      }
+      data = {
+        dateList:['日','一','二','三','四','五','六'],
+        monthList:[]
+      }
+      onLoad (options) {
+        this.monthList = this.computedDateList();
+      }
+      computedDateList () {
+          const date = new Date();
+          const now_month = date.getMonth() + 1; //当前月
+          const currentDay = date.getDate(); //当前日 
+          const year = date.getFullYear(); //当前年份
+          const next_year = now_month >= 12 ? year + 1 : year; //下个月年份
+          const day_num = new Date(year,now_month,0); //本月天数
+          const sale_in_timestamp = 29 * 1000 * 60 * 60 * 24; //预售期时间戳 
+          const next_day_num = next_year >=year ? (new Date(next_year,1,0)) : (new Date(year,now_month + 1,0)); //下月天数
+          const setList = [{
+            day_num:day_num.getDate(),
+            year:year,
+            month:now_month
+          },{
+            day_num:next_day_num.getDate(),
+            year:next_year,
+            month:next_year > year ? 1 : now_month + 1
+          }]; //月份天数集合 
+          let monthList = [];
+        
+         for (let i =0; i< 2;i++) {
+           const currentDayItem = setList[i];
+            monthList[i]= {};
+            monthList[i]['key'] = `${currentDayItem.year}年${currentDayItem.month}月`;
+           for (let j=0;j<=currentDayItem.day_num;j++) {
+             let first_yyyy_mm_dd = `${currentDayItem.year}-${String(currentDayItem.month).padStart(2,'0')}-01`;
+             let current_date = `${currentDayItem.year}-${String(currentDayItem.month).padStart(2,'0')}-${String(j).padStart(2,'0')} 00:00`;
+             const getcurrentDate = (yyyy_mm_dd) =>{
+               const curr_date = this.$parent.globalData.checkIsIOS ? yyyy_mm_dd.replace(/\-/g, '/') : yyyy_mm_dd;
+                return (new Date(curr_date));
+             }
+             let d = getcurrentDate(current_date);
+
+             if (j==0) {
+                let start_day = getcurrentDate(first_yyyy_mm_dd).getDay();
+                monthList[i]['value'] = new Array(start_day);
+             } else {
+                monthList[i]['value'].push({
+                  day:j,
+                  date:`${currentDayItem.year}-${String(currentDayItem.month).padStart(2,'0')}-${String(j).padStart(2,'0')}`,
+                  lunarday:GetLunarDay(currentDayItem.year,currentDayItem.month,j),
+                  disabled:( (new Date()).getTime() - d.getTime() ) > (24 * 1000 * 60 * 60), //是否过期 大于一天
+                  can_sales: ( (new Date()).getTime() - d.getTime() ) <= (24 * 1000 * 60 * 60) && (( d.getTime() - (new Date()).getTime() ) <= sale_in_timestamp )
+                })
+             }
+            }
+          }  
+        console.log((new Date()).getTime(),'(new Date()).getTime()')
+        return monthList;
+      }
+      methods = {
+        chooseTrainDate (index,item) {
+          if (!item.can_sales&&!item.disabled) {
+            return wx.showToast({
+              title:'暂不支持',
+              icon:'none'
+            })
+          }
+          item.can_sales &&!item.disabled&&this.methods.chooseDate(item.date)&&wx.navigateBack();
+          
+        }
+      }
+      onPullDownRefresh () {
+      }
+  }
+</script>

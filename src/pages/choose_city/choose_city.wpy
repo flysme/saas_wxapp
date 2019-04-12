@@ -1,0 +1,84 @@
+<!--
+ * @Description: 
+ * @Author: zhaofeixiang
+ * @LastEditors: zhaofeixiang
+ * @Date: 2019-04-04 18:24:19
+ * @LastEditTime: 2019-04-11 17:54:28
+ -->
+<style lang="scss">
+  .citys{
+    .selectable-city{
+      margin: 20rpx 25rpx;
+      .city-title{
+        color: #ccc;
+        margin:10rpx 0;
+      }
+      .city-list{
+        flex-wrap: wrap;
+        .city-item{
+          display: inline-block;
+          width: calc( ( 100% - 45rpx ) / 4 );
+          height: 60rpx;
+          line-height: 60rpx;
+          text-align: center;
+          margin:0 15rpx 15rpx 0;
+          background-color: #fff;
+          vertical-align: top;
+        }
+        .margin-r0{
+          margin-right: 0;
+        }
+      }
+    }
+  }
+</style>
+<template>
+  <view class="citys">
+      <view class="selectable-city">
+          <view class="city-title f-13">
+            可选城市
+          </view>
+          <view class="city-list">
+             <view class="city-item f-14 {{ ( index+1 ) % 4 == 0 ? 'margin-r0' :''}}" wx:for-items="{{stationList}}" wx:for-index="index" wx:key="index" @tap="chooseCitys({{item}})">{{item.name}}</view>
+          </view>
+      </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import { connect } from 'wepy-redux'
+  import * as ACTION from '@/store/actions'
+  import { SETCITY } from '../../store/types/ticket'
+  @connect({
+    stationList (state) {
+      return state.ticket.stationList
+    },
+  },{
+  getStationCode:ACTION.getStationCode,
+  setcity:SETCITY
+})
+  export default class Citys extends wepy.page {
+      config = {
+        navigationBarTitleText: '出发站'
+      }
+      data = {
+        station_seq:'start'
+      }
+      onLoad (options) {
+        this.station_seq = options.status;
+        this.getStationCode();
+      }
+      getStationCode () {
+        this.methods.getStationCode();
+      }
+      methods = {
+        chooseCitys (city) {
+          this.methods.setcity({city,status:this.station_seq});
+          wx.navigateBack({delta: 1 })
+        }
+      }
+      onPullDownRefresh () {
+        this.getStationCode();
+      }
+  }
+</script>

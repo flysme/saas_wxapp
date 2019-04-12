@@ -1,3 +1,10 @@
+<!--
+ * @Description: 
+ * @Author: zhaofeixiang
+ * @LastEditors: zhaofeixiang
+ * @Date: 2019-03-07 10:45:09
+ * @LastEditTime: 2019-04-01 18:00:47
+ -->
 <style lang="scss" scoped>
       .store-main{
           border: 1px solid transparent;
@@ -40,9 +47,11 @@
                   width: 120rpx;
                   padding: 10rpx 0;
                   text-align: center;
+                  border-radius: 30rpx;
                 }
                 .active {
-                  color: #ff6787;
+                  color:#fff;
+                  background-color:#ff6787;
                 }
               }
             }
@@ -50,7 +59,7 @@
                 transform: translateY(-70rpx);
             }
             .content-container-main{
-              margin-top: 150rpx;
+              margin: 150rpx 20rpx 0 20rpx;
               .rest-main{
                 width: 100%;
                 left: 0;
@@ -83,21 +92,21 @@
                 }
               }
               .tradings-list{
-                  padding:10rpx 20rpx;
                   flex-wrap: wrap;
                 .tradings-item-main{
                   width:calc( (100% - 20rpx ) / 2 );
-                  padding:0 20rpx;
+                  padding:20rpx;
                   box-sizing: border-box;
                   min-height: 340rpx;
                   background-color: #FFF;
-                  margin:10rpx 20rpx 10rpx 0;
+                  margin:20rpx 20rpx 10rpx 0;
                   overflow: hidden;
+                  border-radius: 20rpx;
                   image{
                     display: block;
-                    margin:20rpx auto;
+                    margin:20rpx 0;
                     margin-top:30rpx;
-                    width: 80%;
+                    width: 100%;
                     height: 180rpx;
                   }
                   .tradings-title{
@@ -120,12 +129,13 @@
                     }
                     .tradings-btn{
                       width:130rpx;
-                      height:42rpx;
-                      border-radius:15rpx;
+                      height:52rpx;
+                      border-radius:35rpx;
                       background-color:#ff6787;
                       color:#fff;
-                      line-height:42rpx;
+                      line-height:52rpx;
                       text-align:center;
+                      border:none;
                     }
                     .btn-unbusiness{
                       background-color:#8a8a8a;
@@ -413,7 +423,7 @@
                         <image src="{{item.src}}" mode="aspectFill"></image>
                         <view class="tradings-title f-11">{{item.title}}</view>
                         <view class="tradings-foot-main sys-flex">
-                            <view class="tradings-price f-13">¥{{item.sku_price}}</view>
+                            <view class="tradings-price sys-flex-one f-13">¥{{item.sku_price}}</view>
                             <view class="tradings-btn  f-11" wx:if="{{storeInfo.setting.is_business && is_Login}}" @tap="addInitCar({{item}})">加入购物车</view>
                             <button  class="tradings-btn  f-11" open-type="getUserInfo" @getuserinfo="getuserinfo" data-item="{{item}}"  wx:if="{{storeInfo.setting.is_business && !is_Login}}">加入购物车</button>
                             <view wx:else></view>
