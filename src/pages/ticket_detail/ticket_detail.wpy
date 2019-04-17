@@ -1,0 +1,183 @@
+<!--
+ * @Description: 
+ * @Author: zhaofeixiang
+ * @LastEditors: zhaofeixiang
+ * @Date: 2019-04-16 10:21:21
+ * @LastEditTime: 2019-04-16 16:17:46
+ -->
+<style lang="scss">
+  .ticket-detail{
+    width: 100%;
+    padding: 20rpx;
+    height:100vh;
+    box-sizing: border-box;
+    background-color: #fafafa;
+    .train-info{
+      width: 100%;
+      height: 200rpx;
+      background-color: #fff;
+      border-radius: 20rpx;
+      box-sizing: border-box;
+      padding: 20rpx;
+      .train-time{
+        justify-content: space-between;
+        .time{
+          margin: 10rpx 0;
+        }
+        .center-main{
+          text-align: center;
+          .station-line{
+            width: 100%;
+            margin: 10rpx 0;
+            border-bottom: 1px solid #333;
+          }
+        }
+      }
+    }
+    .seats-info{
+      width: 100%;
+      min-height: 200rpx;
+      margin-top: 20rpx;
+      background-color: #fff;
+      border-radius: 20rpx;
+      box-sizing: border-box;
+      padding: 20rpx;
+      .seats-item{
+        justify-content: space-between;
+        height: 80rpx;
+        align-items: center;
+        .seats-sku{
+          color: #333;
+        }
+        .seats-price{
+          color: #fc6954;
+        }
+        .seats-btn{
+          width: 120rpx;
+          height: 50rpx;
+          line-height: 50rpx;
+          text-align: center;
+          border-radius: 25rpx;
+          margin:0;
+          color: #fff;
+          background:linear-gradient(to right,#ff8222,#f44444);
+        }
+        .self-btn{
+          background:#287ffb;
+        }
+      }
+    }
+  }
+</style>
+<template>
+  <view class="ticket-detail">
+    <view class="train-info">
+        <view class="train-time sys-flex">
+                <view class="start-time">
+                    <view class="time f-20 font-weight-500">{{ticketItemInfo.departDepartTime}}</view>
+                    <view class="station f-17">{{ticketItemInfo.departStationName}}</view>
+                </view>
+                <view class="center-main">
+                    <view class="train-number f-14">{{ticketItemInfo.trainNum}}</view>
+                    <view class="station-line f-17"></view>
+                     <view class="train-use-time f-17">{{ticketItemInfo.duration}}</view>
+                </view>
+                <view class="start-time">
+                    <view class="time  f-20 font-weight-500">{{ticketItemInfo.destArriveTime}}</view>
+                    <view class="station f-17">{{ticketItemInfo.destStationName}}</view>
+                </view>
+        </view>
+    </view>
+    <view class="seats-info">
+      <view class="seats-item sys-flex" wx:for-items="{{ticketItemInfo.seatDesc}}" wx:for-index="idx" wx:for-item="seat_item" wx:key="id">
+          <view class="seats-sku f-16">{{seat_item.seatName}}{{seat_item.seatId==1 || seat_item.seatId==2 || seat_item.seatId==3 ?'座':''}}</view>
+          <view class="seats-status f-16">{{seat_item.leftNumber}}张</view>
+          <view class="seats-price f-17">￥{{seat_item.price}}</view>
+          <block wx:if="{{!seat_item.leftNumber}}">
+              <button  class="seats-btn f-12" open-type="getUserInfo" @getuserinfo="getuserinfo" data-item="{{seat_item}}"  wx:if="{{!is_Login}}">去监控</button>
+               <form name='pushMsgFm' report-submit @submit='sendOnTicket' data-item="{{seat_item}}" wx:else>   
+                  <button class="seats-btn f-12" form-type="submit" >去监控</button>
+               </form>
+          </block>
+          <block wx:else>
+              <button class="seats-btn f-12 self-btn" @tap="buyToast">自行购票</button>
+          </block>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import { connect } from 'wepy-redux'
+  import * as ACTION from '@/store/actions'
+  @connect({
+    is_Login (state) {
+      return state.login.is_Login
+    },
+    ticketItemInfo (state) {
+      return state.ticket.ticketItemInfo
+    },
+    train_date (state) {
+      return state.ticket.train_date
+    },
+    startStation (state) {
+      return state.ticket.startStation
+    },
+    arriveStation (state) {
+      return state.ticket.arriveStation
+    },
+  },{
+  wxLogin:ACTION.wxLogin,
+  sendCheckTicket:ACTION.sendCheckTicket,
+})
+  export default class TicketDetail extends wepy.page {
+      config = {
+        navigationBarTitleText: '车次详情'
+      }
+      onLoad () {
+        
+      }
+      methods = {
+        // 获取用户信息
+        getuserinfo (e) {
+          this.methods.wxLogin(e)
+        },
+        buyToast () {
+          wx.showToast({
+            title: '去购票app购票吧',
+            icon: 'none',
+            duration: 2000
+          })
+        },
+        sendOnTicket (data) {
+          const { item } = data.currentTarget.dataset;
+          const { formId } = data.detail;
+          wx.showModal({
+            title: '确认监控',
+            content: '有票将通过微信通知给您',
+            success:(res)=>{
+              if (res.confirm) {
+                this.methods.sendCheckTicket({
+                  form_id:formId,
+                  train_num: this.ticketItemInfo.trainNum,
+                  train_date: this.train_date,
+                  seatName:item.seatName,
+                  seatId:item.seatId,
+                  price:item.price,
+                  ticketquery:{
+                    fromCityname:this.startStation.name,
+                    from_station_id:this.startStation.station_id,
+                    fromCitycode:this.startStation.code,
+                    toCityname:this.arriveStation.name,
+                    to_station_id:this.arriveStation.station_id,
+                    to_station:this.arriveStation.code,
+                    date:this.train_date
+                  }
+                })
+              }
+            }
+          })
+        }
+      }
+  }
+</script>

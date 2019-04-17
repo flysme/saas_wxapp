@@ -1,5 +1,6 @@
 import { handleActions } from 'redux-actions'
 import { WEIXINLOADUSERINFO } from '../types/login'
+import  UTILS from '@/utils/utils' // 本地缓存
 
 export default handleActions({
   [WEIXINLOADUSERINFO] (state,action) {
@@ -10,6 +11,6 @@ export default handleActions({
     }
   }
 }, {
-  is_Login:false,
+  is_Login:UTILS.StorageSync.get('sessionid') ? true : false,
   userInfo:null
 })

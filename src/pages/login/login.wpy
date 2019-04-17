@@ -21,7 +21,7 @@
 </style>
 <template>
   <view class="login">
-      <button open-type="getUserInfo" class='f-14' @getuserinfo="wxLogin">微信登录</button>
+      <button open-type="getUserInfo" class='f-14' @getuserinfo="wxLogin">微信授权</button>
   </view>
 </template>
 <script>

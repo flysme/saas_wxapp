@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-04 18:24:19
- * @LastEditTime: 2019-04-12 18:20:39
+ * @LastEditTime: 2019-04-17 10:02:19
  -->
 <style lang="scss">
 .ticket{
@@ -175,7 +175,7 @@
       </view>
       <view  wx:if="{{is_Empty}}" class="empty-text f-15">很抱歉，暂无此车次的信息</view>
       <view wx:else class="ticket-main">
-          <view class="ticket-item sys-flex" wx:for-items="{{ticketList}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+          <view class="ticket-item sys-flex" wx:for-items="{{ticketList}}" wx:for-index="index" wx:for-item="item" wx:key="id" @tap="toTicketDetail({{item}})">
               <view class="ticket-t-item sys-flex">
                   <view class="ticket-t-l-item sys-flex">
                       <view class="start-stations">
@@ -233,7 +233,7 @@
   import wepy from 'wepy'
   import { connect } from 'wepy-redux'
   import * as ACTION from '@/store/actions'
-  import { GETPREVIOUSDAY,GETNEXTDAY,INITBTNSTATUS } from '../../store/types/ticket'
+  import { GETPREVIOUSDAY,GETNEXTDAY,INITBTNSTATUS,SETTICKETITEMINFO } from '../../store/types/ticket'
   @connect({
     startStation (state) {
       return state.ticket.startStation
@@ -257,6 +257,7 @@
   getPreviousDay:GETPREVIOUSDAY,
   getNextDay:GETNEXTDAY,
   initbtnstatus:INITBTNSTATUS,
+  setTicketInfo:SETTICKETITEMINFO,
 })
   export default class Tickets extends wepy.page {
       config = {
@@ -277,6 +278,13 @@
         this.methods.initbtnstatus(); //初始化上一天按钮是否可用
       }
       methods = {
+        /**
+         * 跳转车票详情
+         */
+        toTicketDetail (item) {
+             this.methods.setTicketInfo(item);
+             wx.navigateTo({url: `../ticket_detail/ticket_detail`})
+        },
         chooseDate () {
               wx.navigateTo({url: `../choose_date/choose_date`})
         },

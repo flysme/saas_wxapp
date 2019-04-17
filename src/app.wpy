@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-03-01 18:06:22
- * @LastEditTime: 2019-04-09 14:57:59
+ * @LastEditTime: 2019-04-16 11:10:07
  -->
 <style lang="less">
 page{
@@ -71,6 +71,7 @@ export default class extends wepy.app {
       'pages/store_detail/store_detail',
       'pages/login/login',
       'pages/index/index',
+      'pages/ticket_detail/ticket_detail',
     ],
     window: {
       backgroundTextStyle: 'light',

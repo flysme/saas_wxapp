@@ -3,11 +3,11 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-08 17:45:13
- * @LastEditTime: 2019-04-12 18:09:31
+ * @LastEditTime: 2019-04-16 11:25:38
  */
 import { handleActions } from 'redux-actions'
 import UTILS from '@/utils/utils';
-import { GETTICKET, GETSTATIONCODE, SETCITY,CHANGECITYORDER,CHOOSEDATE,GETPREVIOUSDAY,GETNEXTDAY,INITBTNSTATUS } from '../types/ticket'
+import { GETSTATIONCODE, SETCITY,CHANGECITYORDER,CHOOSEDATE,GETPREVIOUSDAY,GETNEXTDAY,INITBTNSTATUS,SENDCHECKTICKETMESSAGE,SETTICKETITEMINFO } from '../types/ticket'
 
 
 const date = UTILS.resetnewDate(); //当前时间
@@ -71,6 +71,20 @@ export default handleActions({
       ...state,
       btn_pre_status:date.toDateString() === default_date.toDateString() ? false : true
     }
+  },
+  [SENDCHECKTICKETMESSAGE] (state,action) {
+    return {
+      ...state
+    }
+  },
+  [SETTICKETITEMINFO] (state,action) {
+    console.log(action,'xxxx')
+    let ticketItemInfo = action.payload;
+    ticketItemInfo.seatDesc = ticketItemInfo.seatDesc.filter(item=>item!=null);
+    return {
+      ...state,
+      ticketItemInfo: ticketItemInfo, //单个车次信息
+    }
   }
 }, {
   stationList:[],
@@ -80,4 +94,5 @@ export default handleActions({
   arriveStation:{name:'南京',code:1602,station_id:''}, //到达车站
   select_date:UTILS.getCurrentDate(),
   btn_pre_status:false, //上一个是否可用
+  ticketItemInfo: {}, //单个车次信息
 })
