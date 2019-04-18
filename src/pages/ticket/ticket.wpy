@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-04 18:24:19
- * @LastEditTime: 2019-04-17 10:02:19
+ * @LastEditTime: 2019-04-18 11:34:27
  -->
 <style lang="scss">
 .ticket{
@@ -308,11 +308,9 @@
       getTicket () {
        this.methods.getTicket({
           fromCityname:this.startStation.name,
-          from_station_id:this.startStation.station_id,
           fromCitycode:this.startStation.code,
           toCityname:this.arriveStation.name,
-          to_station_id:this.arriveStation.station_id,
-          to_station:this.arriveStation.code,
+          toCitycode:this.arriveStation.code,
           date:this.train_date
        }).then(action=>{
          this.origindata.allticketList = action.payload;
