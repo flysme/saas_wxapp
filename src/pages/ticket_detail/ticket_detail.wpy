@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-16 10:21:21
- * @LastEditTime: 2019-04-16 16:17:46
+ * @LastEditTime: 2019-04-22 16:16:51
  -->
 <style lang="scss">
   .ticket-detail{
@@ -74,26 +74,26 @@
     <view class="train-info">
         <view class="train-time sys-flex">
                 <view class="start-time">
-                    <view class="time f-20 font-weight-500">{{ticketItemInfo.departDepartTime}}</view>
-                    <view class="station f-17">{{ticketItemInfo.departStationName}}</view>
+                    <view class="time f-20 font-weight-500">{{ticketItemInfo.fromtime}}</view>
+                    <view class="station f-17">{{ticketItemInfo.fromstationname}}</view>
                 </view>
                 <view class="center-main">
-                    <view class="train-number f-14">{{ticketItemInfo.trainNum}}</view>
+                    <view class="train-number f-14">{{ticketItemInfo.traincode}}</view>
                     <view class="station-line f-17"></view>
-                     <view class="train-use-time f-17">{{ticketItemInfo.duration}}</view>
+                     <view class="train-use-time f-17">{{ticketItemInfo.spantime}}</view>
                 </view>
                 <view class="start-time">
-                    <view class="time  f-20 font-weight-500">{{ticketItemInfo.destArriveTime}}</view>
-                    <view class="station f-17">{{ticketItemInfo.destStationName}}</view>
+                    <view class="time  f-20 font-weight-500">{{ticketItemInfo.totime}}</view>
+                    <view class="station f-17">{{ticketItemInfo.tostationname}}</view>
                 </view>
         </view>
     </view>
     <view class="seats-info">
-      <view class="seats-item sys-flex" wx:for-items="{{ticketItemInfo.seatDesc}}" wx:for-index="idx" wx:for-item="seat_item" wx:key="id">
-          <view class="seats-sku f-16">{{seat_item.seatName}}{{seat_item.seatId==1 || seat_item.seatId==2 || seat_item.seatId==3 ?'座':''}}</view>
-          <view class="seats-status f-16">{{seat_item.leftNumber}}张</view>
-          <view class="seats-price f-17">￥{{seat_item.price}}</view>
-          <block wx:if="{{!seat_item.leftNumber}}">
+      <view class="seats-item sys-flex" wx:for-items="{{ticketItemInfo.seatList}}" wx:for-index="idx" wx:for-item="seat_item" wx:key="id">
+          <view class="seats-sku f-16">{{seat_item.seatName}}</view>
+          <view class="seats-status f-16">{{seat_item.seatInventory}}{{seat_item.seatInventory!='无' ?'张':''}}</view>
+          <view class="seats-price f-17">￥{{seat_item.seatPrice}}</view>
+          <block wx:if="{{!seat_item.seatInventory}}">
               <button  class="seats-btn f-12" open-type="getUserInfo" @getuserinfo="getuserinfo" data-item="{{seat_item}}"  wx:if="{{!is_Login}}">去监控</button>
                <form name='pushMsgFm' report-submit @submit='sendOnTicket' data-item="{{seat_item}}" wx:else>   
                   <button class="seats-btn f-12" form-type="submit" >去监控</button>
@@ -114,9 +114,9 @@
     is_Login (state) {
       return state.login.is_Login
     },
-    ticketItemInfo (state) {
-      return state.ticket.ticketItemInfo
-    },
+    // ticketItemInfo (state) {
+    //   return state.ticket.ticketItemInfo
+    // },
     train_date (state) {
       return state.ticket.train_date
     },
@@ -128,14 +128,38 @@
     },
   },{
   wxLogin:ACTION.wxLogin,
+  getTicketDetail:ACTION.getTicketDetail,
   sendCheckTicket:ACTION.sendCheckTicket,
 })
   export default class TicketDetail extends wepy.page {
       config = {
         navigationBarTitleText: '车次详情'
       }
-      onLoad () {
-        
+      data = {
+        ticketItemInfo:{},
+        trainCode:''
+      }
+      onLoad (options) {
+        this.trainCode = options.trainCode;
+        this.getTicketDetails();
+      }
+      // 获取车票详情
+      getTicketDetails () {
+          this.methods.getTicketDetail({
+              fromCityname:this.startStation.name,
+              fromCitycode:this.startStation.code,
+              toCityname:this.arriveStation.name,
+              toCitycode:this.arriveStation.code,
+              trainCode:this.trainCode,
+              date:this.train_date
+          }).then(action=>{
+            this.ticketItemInfo = action.payload;
+            wx.hideLoading()
+            this.$apply();
+          }).catch(()=>{
+            wx.hideLoading()
+            this.$apply();
+          });
       }
       methods = {
         // 获取用户信息
@@ -149,6 +173,7 @@
             duration: 2000
           })
         },
+       
         sendOnTicket (data) {
           const { item } = data.currentTarget.dataset;
           const { formId } = data.detail;
@@ -159,19 +184,16 @@
               if (res.confirm) {
                 this.methods.sendCheckTicket({
                   form_id:formId,
-                  train_num: this.ticketItemInfo.trainNum,
+                  trainCode: this.ticketItemInfo.trainCode,
                   train_date: this.train_date,
                   seatName:item.seatName,
-                  seatId:item.seatId,
+                  seatCode:item.seatCode,
                   price:item.price,
                   ticketquery:{
-                    fromCityname:this.startStation.name,
-                    from_station_id:this.startStation.station_id,
                     fromCitycode:this.startStation.code,
-                    toCityname:this.arriveStation.name,
-                    to_station_id:this.arriveStation.station_id,
-                    to_station:this.arriveStation.code,
-                    date:this.train_date
+                    toCitycode:this.arriveStation.code,
+                    date:this.train_date,
+                    trainCode: this.ticketItemInfo.trainCode,
                   }
                 })
               }

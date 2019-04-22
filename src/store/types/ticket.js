@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-08 17:45:18
- * @LastEditTime: 2019-04-16 11:08:13
+ * @LastEditTime: 2019-04-22 15:21:22
  */
 export const GETTICKET = 'GETTICKET';
 
@@ -26,4 +26,4 @@ export const INITBTNSTATUS = 'INITBTNSTATUS';
 
 export const SENDCHECKTICKETMESSAGE = 'SENDCHECKTICKETMESSAGE';
 
-export const SETTICKETITEMINFO = 'SETTICKETITEMINFO';
+export const GETTICKETDETAIL = 'GETTICKETDETAIL';

@@ -3,11 +3,11 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-08 17:45:13
- * @LastEditTime: 2019-04-16 11:25:38
+ * @LastEditTime: 2019-04-22 15:13:39
  */
 import { handleActions } from 'redux-actions'
 import UTILS from '@/utils/utils';
-import { GETSTATIONCODE, SETCITY,CHANGECITYORDER,CHOOSEDATE,GETPREVIOUSDAY,GETNEXTDAY,INITBTNSTATUS,SENDCHECKTICKETMESSAGE,SETTICKETITEMINFO } from '../types/ticket'
+import { GETSTATIONCODE, SETCITY,CHANGECITYORDER,CHOOSEDATE,GETPREVIOUSDAY,GETNEXTDAY,INITBTNSTATUS,SENDCHECKTICKETMESSAGE } from '../types/ticket'
 
 
 const date = UTILS.resetnewDate(); //当前时间
@@ -76,23 +76,13 @@ export default handleActions({
     return {
       ...state
     }
-  },
-  [SETTICKETITEMINFO] (state,action) {
-    console.log(action,'xxxx')
-    let ticketItemInfo = action.payload;
-    ticketItemInfo.seatDesc = ticketItemInfo.seatDesc.filter(item=>item!=null);
-    return {
-      ...state,
-      ticketItemInfo: ticketItemInfo, //单个车次信息
-    }
   }
 }, {
   stationList:[],
   purpose_codes:'ADULT', //车票类型 ADULT 成人票
   train_date:UTILS.getCurrentDate(), //出行日期
-  startStation:{name:'上海',code:2500,station_id:''}, //出发车站
-  arriveStation:{name:'南京',code:1602,station_id:''}, //到达车站
+  startStation:{name:'上海',code:'SHH'}, //出发车站
+  arriveStation:{name:'南京',code:'NJH'}, //到达车站
   select_date:UTILS.getCurrentDate(),
   btn_pre_status:false, //上一个是否可用
-  ticketItemInfo: {}, //单个车次信息
 })

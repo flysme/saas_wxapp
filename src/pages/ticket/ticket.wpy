@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-04 18:24:19
- * @LastEditTime: 2019-04-18 11:34:27
+ * @LastEditTime: 2019-04-22 15:34:39
  -->
 <style lang="scss">
 .ticket{
@@ -179,25 +179,25 @@
               <view class="ticket-t-item sys-flex">
                   <view class="ticket-t-l-item sys-flex">
                       <view class="start-stations">
-                          <view class="start-time f-21 font-weight-500">{{item.seatDesc.length ? item.departDepartTime : '--:--'}}</view>
-                          <view class="start-station-name f-12">{{item.departStationName}}</view>
+                          <view class="start-time f-21 font-weight-500">{{item.seatList.length ? item.fromtime : '--:--'}}</view>
+                          <view class="start-station-name f-12">{{item.fromstationname}}</view>
                       </view>
                       <view class="use-time">
-                          <view class="train-number f-11">{{item.trainNum}}</view>
+                          <view class="train-number f-11">{{item.traincode}}</view>
                           <view class="train-link-line sys-flex">
                               <view class="train-l-circle"></view>
                               <view class="train-c-line"></view>
                               <view class="train-r-circle"></view>
                           </view>
-                          <view class="train-time f-11">{{item.seatDesc.length ? item.duration : ''}}</view>
+                          <view class="train-time f-11">{{item.seatList.length ? item.spantime : ''}}</view>
                       </view>
                       <view class="end-stations">
-                          <view class="end-time f-21 font-weight-500">{{item.seatDesc.length ? item.destArriveTime : '--:--'}}</view>
-                          <view class="end-station-name f-12">{{item.destStationName}}</view>
+                          <view class="end-time f-21 font-weight-500">{{item.seatList.length ? item.totime : '--:--'}}</view>
+                          <view class="end-station-name f-12">{{item.tostationname}}</view>
                       </view>
                   </view>
                   <view class="ticket-t-r-item">
-                      <block wx:if="{{item.seatDesc.length}}">
+                      <block wx:if="{{item.seatList.length}}">
                         <view class="ticket-price">
                             <text class="f-14">￥</text>
                             <text class="f-21 font-weight-500">{{item.min_price || item.price}}</text>
@@ -211,18 +211,18 @@
               </view>
               <view class="f-11 sys-flex ticket-b-main-item">
                 <block  wx:if="{{item.seat_num}}">
-                   <view class="ticket-b-item sys-flex sys-flex-one" wx:for-items="{{item.seatDesc}}" wx:for-index="idx" wx:for-item="seat_item" wx:key="id">
+                   <view class="ticket-b-item sys-flex sys-flex-one" wx:for-items="{{item.seatList}}" wx:for-index="idx" wx:for-item="seat_item" wx:key="id">
                       <block>
                         <block wx:if="{{seat_item}}"> 
-                            <view wx:if="{{seat_item.leftNumber>0}}">{{seat_item.seatName}}{{seat_item.seatId==1 || seat_item.seatId==2 || seat_item.seatId==3 ?'座':''}}{{seat_item.leftNumber}}张</view>
-                          <view wx:else class="ticket-empty-seat">{{seat_item.seatName}}{{seat_item.seatId==1 || seat_item.seatId==2 || seat_item.seatId==3 ?'座':''}}0张<text>(监)</text></view>
+                            <view wx:if="{{seat_item.seatInventory>0}}">{{seat_item.seatName}}{{seat_item.seatInventory}}张</view>
+                          <view wx:else class="ticket-empty-seat">{{seat_item.seatName}}0张<text>(监)</text></view>
                         </block>
                           <view wx:else></view>
                       </block>
                   </view>
                 </block>
                 <block  wx:else>
-                    <text class="f-11" wx:if="{{item.seatDesc.length}}">暂无余票 、建议去监控</text>
+                    <text class="f-11" wx:if="{{item.seatList.length}}">暂无余票 、建议去监控</text>
                 </block>
               </view>
           </view>
@@ -282,8 +282,7 @@
          * 跳转车票详情
          */
         toTicketDetail (item) {
-             this.methods.setTicketInfo(item);
-             wx.navigateTo({url: `../ticket_detail/ticket_detail`})
+             wx.navigateTo({url: `../ticket_detail/ticket_detail?trainCode=${item.traincode}`})
         },
         chooseDate () {
               wx.navigateTo({url: `../choose_date/choose_date`})
@@ -331,16 +330,16 @@
         for(let i = 0,len= data.length; i < len; i++) {
           let min_price = [];
           data[i].seat_num = 0;
-          for (let j=0,currentlength = data[i].seatDesc.length; j < currentlength; j++) {
-            data[i].seat_num += data[i].seatDesc[j].leftNumber;
-            data[i].seatDesc[j].leftNumber && min_price.push(data[i].seatDesc[j].adultPrice);
+
+          for (let j=0,currentlength = data[i].seatList.length; j < currentlength; j++) {
+            data[i].seat_num += data[i].seatList[j].seatInventory!='无' && Number(data[i].seatList[j].seatInventory);
+            data[i].seatList[j].seatInventory!='无' && Number(data[i].seatList[j].seatInventory) && min_price.push(Number(data[i].seatList[j].seatPrice));
           }
-          const minLen = Math.max(data[i].seatDesc.length,4);
-          const redLen = data[i].seatDesc.length ? new Array(minLen - data[i].seatDesc.length) : [];
-          data[i].seatDesc = [].concat(data[i].seatDesc,redLen);
           data[i].min_price = Math.min(...min_price)
           newTicketList.push(data[i]);
         }
+         console.log(newTicketList,'newTicketList')
+
         return newTicketList;
       }
       onReachBottom () {
