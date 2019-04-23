@@ -1,0 +1,97 @@
+<!--
+ * @Description: 
+ * @Author: zhaofeixiang
+ * @LastEditors: zhaofeixiang
+ * @Date: 2019-04-23 10:59:29
+ * @LastEditTime: 2019-04-23 15:01:44
+ -->
+<style lang="less">
+   .stop-station-list{
+     width: 100%;
+     height:100vh;
+     position: fixed;
+     left: 0;
+     top: 0;
+     background-color: rgba(0, 0, 0, 0.3);
+     .stop-main{
+       width: 90%;
+       height: 80vh;
+       margin: 10vh auto;
+       background-color: #fff;
+       border-radius: 20rpx;
+       .header{
+         justify-content: space-between;
+         align-items: center;
+         height: 60rpx;
+         border-radius: 20rpx 20rpx 0 0;
+         background-color: #fafafa;
+         .header-station,.header-arrive,.header-start,.header-stop-time{
+           text-align: center;
+         }
+       }
+       .content-main{
+         height:69vh;
+         overflow-y: auto;
+         -webkit-overflow-scrolling:touch;
+         &::-webkit-scrollbar {
+           display:none
+         }
+         .content{
+            height: 80rpx;
+            border-bottom: 1px solid #fafafa;
+            justify-content: space-between;
+            align-items: center;
+            .content-station,.content-arrive,.content-start,.content-stop-time{
+              text-align: center;
+            }
+          }
+       }
+     }
+   }
+</style>
+<template>
+    <view class="stop-station-list" @tap="closeToast">
+        <view class="stop-main">
+            <view class="header sys-flex f-12">
+                <view class="header-station sys-flex-one">车站</view>
+                <view class="header-arrive sys-flex-one">到达时间</view>
+                <view class="header-start sys-flex-one">出发时间</view>
+                <view class="header-stop-time sys-flex-one">停留时间</view>
+            </view>
+            <view class="content-main">
+              <view class="content sys-flex f-12" wx:for="{{stopsList}}" wx:key="index" wx:for-index="index">
+                  <view class="content-station sys-flex-one">{{item.startStation}}</view>
+                  <view class="content-arrive sys-flex-one">{{item.endTime}}</view>
+                  <view class="content-start sys-flex-one">{{item.startTime}}</view>
+                  <view class="content-stop-time sys-flex-one">{{item.duration > 0 ? item.duration + '分钟' : '--'}}</view>
+              </view>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class Stopstation extends wepy.component {
+    data = {
+     
+    }
+    props = {
+      stopsList:{
+        type:Array,
+         coerce: function (v) {
+          return +v
+        },
+        default:[]
+      }
+    }
+    methods = {
+      closeToast () {
+        this.$emit('close-toast');
+      }
+    }
+    onLoad () {
+        console.log(this.stopsList,'stationList')
+    }
+  }
+</script>

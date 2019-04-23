@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-04 18:24:19
- * @LastEditTime: 2019-04-22 15:34:39
+ * @LastEditTime: 2019-04-22 18:13:36
  -->
 <style lang="scss">
 .ticket{
@@ -333,12 +333,11 @@
 
           for (let j=0,currentlength = data[i].seatList.length; j < currentlength; j++) {
             data[i].seat_num += data[i].seatList[j].seatInventory!='无' && Number(data[i].seatList[j].seatInventory);
-            data[i].seatList[j].seatInventory!='无' && Number(data[i].seatList[j].seatInventory) && min_price.push(Number(data[i].seatList[j].seatPrice));
+             min_price.push(Number(data[i].seatList[j].seatPrice));
           }
-          data[i].min_price = Math.min(...min_price)
+          data[i].min_price = Math.min(...min_price);
           newTicketList.push(data[i]);
         }
-         console.log(newTicketList,'newTicketList')
 
         return newTicketList;
       }

@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-08 17:45:05
- * @LastEditTime: 2019-04-22 15:29:20
+ * @LastEditTime: 2019-04-22 16:50:47
  */
 import { GETTICKET,GETSTATIONCODE,SENDCHECKTICKETMESSAGE,GETTICKETDETAIL } from '../types/ticket'
 import { createAction } from 'redux-actions'
@@ -53,7 +53,6 @@ export const getStationCode = createAction(GETSTATIONCODE, (state) => {
 export const sendCheckTicket = createAction(SENDCHECKTICKETMESSAGE, (state) => {
   return new Promise((resolve,reject) => {
     TICKET.onCheckSeatStatus(state).then(res=>{
-        console.log(res,'xxxxxxxx')
         if (res.data) {
           wx.showToast({title: '监控成功！',icon: 'none'})
           resolve(res.data)

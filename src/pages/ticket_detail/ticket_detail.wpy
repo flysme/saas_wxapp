@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-16 10:21:21
- * @LastEditTime: 2019-04-22 16:16:51
+ * @LastEditTime: 2019-04-23 14:55:26
  -->
 <style lang="scss">
   .ticket-detail{
@@ -27,9 +27,14 @@
         .center-main{
           text-align: center;
           .station-line{
-            width: 100%;
+            width: 100rpx;
+            height: 40rpx;
+            line-height: 40rpx;
+            border: 1px solid #999;
+            border-radius: 25rpx;
             margin: 10rpx 0;
-            border-bottom: 1px solid #333;
+            text-align: center;
+            color: #333;
           }
         }
       }
@@ -79,8 +84,8 @@
                 </view>
                 <view class="center-main">
                     <view class="train-number f-14">{{ticketItemInfo.traincode}}</view>
-                    <view class="station-line f-17"></view>
-                     <view class="train-use-time f-17">{{ticketItemInfo.spantime}}</view>
+                    <view class="station-line f-11" @tap="showBanner">时刻表</view>
+                     <!-- <view class="train-use-time f-17">{{ticketItemInfo.spantime}}</view> -->
                 </view>
                 <view class="start-time">
                     <view class="time  f-20 font-weight-500">{{ticketItemInfo.totime}}</view>
@@ -93,7 +98,7 @@
           <view class="seats-sku f-16">{{seat_item.seatName}}</view>
           <view class="seats-status f-16">{{seat_item.seatInventory}}{{seat_item.seatInventory!='无' ?'张':''}}</view>
           <view class="seats-price f-17">￥{{seat_item.seatPrice}}</view>
-          <block wx:if="{{!seat_item.seatInventory}}">
+          <block wx:if="{{seat_item.seatInventory=='无'}}">
               <button  class="seats-btn f-12" open-type="getUserInfo" @getuserinfo="getuserinfo" data-item="{{seat_item}}"  wx:if="{{!is_Login}}">去监控</button>
                <form name='pushMsgFm' report-submit @submit='sendOnTicket' data-item="{{seat_item}}" wx:else>   
                   <button class="seats-btn f-12" form-type="submit" >去监控</button>
@@ -104,19 +109,19 @@
           </block>
       </view>
     </view>
+    <Stopstationbanner :stopsList.sync="stopsList" wx:if="{{showtips}}"></Stopstationbanner>
   </view>
 </template>
 <script>
   import wepy from 'wepy'
   import { connect } from 'wepy-redux'
   import * as ACTION from '@/store/actions'
+  import { TICKET } from '@/http/index'
+  import Stopstationbanner from '@/components/stop-station-banner' // alias example
   @connect({
     is_Login (state) {
       return state.login.is_Login
     },
-    // ticketItemInfo (state) {
-    //   return state.ticket.ticketItemInfo
-    // },
     train_date (state) {
       return state.ticket.train_date
     },
@@ -135,13 +140,24 @@
       config = {
         navigationBarTitleText: '车次详情'
       }
+      components = {
+       Stopstationbanner
+      }
       data = {
         ticketItemInfo:{},
-        trainCode:''
+        trainCode:'',
+        stopsList:[], //经停站列表
+        showtips:false
+      }
+      events = {
+          'close-toast': () => {
+            this.showtips = false;
+          }
       }
       onLoad (options) {
         this.trainCode = options.trainCode;
         this.getTicketDetails();
+        this.getstopStation();
       }
       // 获取车票详情
       getTicketDetails () {
@@ -161,11 +177,31 @@
             this.$apply();
           });
       }
+      // 获取经停站信息
+      getstopStation () {
+        TICKET.getstopStation({trainNo:this.trainCode}).then(res=>{
+          if (res.status == 0 && res.data) {
+            const { stationList } = res.data;
+            const newstationList = stationList.length && stationList.map(item=>{
+              const now = new Date(`1970/01/01 ${item.startTime}`);
+              const end = new Date(`1970/01/01 ${item.endTime}`);
+               item.duration = (now.getTime() - end.getTime()) / 1000 / 60;
+              return item; 
+            })
+            this.stopsList = newstationList;
+            this.$apply();
+          } 
+        })
+      }
       methods = {
+        showBanner () {
+          this.showtips = true;
+        },
         // 获取用户信息
         getuserinfo (e) {
           this.methods.wxLogin(e)
         },
+        // 购票btn
         buyToast () {
           wx.showToast({
             title: '去购票app购票吧',
@@ -173,7 +209,6 @@
             duration: 2000
           })
         },
-       
         sendOnTicket (data) {
           const { item } = data.currentTarget.dataset;
           const { formId } = data.detail;
@@ -184,22 +219,26 @@
               if (res.confirm) {
                 this.methods.sendCheckTicket({
                   form_id:formId,
-                  trainCode: this.ticketItemInfo.trainCode,
+                  trainCode: this.ticketItemInfo.traincode,
                   train_date: this.train_date,
                   seatName:item.seatName,
                   seatCode:item.seatCode,
-                  price:item.price,
+                  price:item.seatPrice,
                   ticketquery:{
                     fromCitycode:this.startStation.code,
                     toCitycode:this.arriveStation.code,
                     date:this.train_date,
-                    trainCode: this.ticketItemInfo.trainCode,
+                    trainCode: this.ticketItemInfo.traincode,
                   }
                 })
               }
             }
           })
         }
+      }
+      onPullDownRefresh () {
+        this.getTicketDetails();
+        this.getstopStation();
       }
   }
 </script>
