@@ -3,10 +3,11 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-03-05 10:00:01
- * @LastEditTime: 2019-04-12 18:17:21
+ * @LastEditTime: 2019-04-25 11:12:54
  */
 import wepy from 'wepy'
 import  UTILS from '@/utils/utils' // 本地缓存
+import  CRYPTOJS from '@/utils/crypto' // 加密
 
 // 设置全局请求头
 const headers = {
@@ -18,6 +19,10 @@ const headers = {
 const host= 'https://api.20130510.cn/api/v1';
 
 // const host= 'http://www.vuetext.com:8083/api/';
+
+
+const key = '0123456789abcdef'; //密钥 16 位
+const iv = '0123456789abcdef'; //初始向量 initial vector 16 位
 
 const serializeUrl = (data)=>{
   let joinStr = '';
@@ -81,6 +86,7 @@ const checkSession = ()=>{
  */ 
 const WxRequest = async (url,data={},method='GET',wx_header,checkLogin)=>{
   let header = wx_header && Object.assign({},headers,wx_header) || headers;
+  data = setSignature(data); //生成sign 签名
   url = host + url;
   return new Promise((resolve,reject)=>{
     wx.showNavigationBarLoading()
@@ -111,6 +117,12 @@ const WxRequest = async (url,data={},method='GET',wx_header,checkLogin)=>{
   })
 }
 
+
+/**
+ * @methods 替换url {template_id} => new_id
+ * @param {*} url 
+ * @param {*} data 
+ */
 const replaceUrl = (url,data)=>{
   if (data && Object.keys(data).length) {
       for (let i in data) {
@@ -123,6 +135,18 @@ const replaceUrl = (url,data)=>{
       }
   }
   return {url,data};
+}
+
+
+/**
+ * @methods 生成带sign的参数
+ * @param {*} data 
+ */
+const setSignature = (data)=>{
+   data.ts = (new Date()).getTime();
+   data.sign = CRYPTOJS.aesEncrypt(JSON.stringify(data),key,iv);
+   console.log(data,'data')
+  return data;
 }
 
 /**

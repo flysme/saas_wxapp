@@ -3,9 +3,9 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-08 17:45:05
- * @LastEditTime: 2019-04-22 16:50:47
+ * @LastEditTime: 2019-04-25 17:56:54
  */
-import { GETTICKET,GETSTATIONCODE,SENDCHECKTICKETMESSAGE,GETTICKETDETAIL } from '../types/ticket'
+import { GETTICKET,GETSTATIONCODE,SENDCHECKTICKETMESSAGE } from '../types/ticket'
 import { createAction } from 'redux-actions'
 import { TICKET } from '@/http/index'
 
@@ -23,18 +23,6 @@ export const getTicket = createAction(GETTICKET, (state) => {
 })
 
 
-export const getTicketDetail = createAction(GETTICKETDETAIL, (state) => {
-  return new Promise((resolve,reject) => {
-    wx.showLoading({title: '拼命加载中'})
-    TICKET.getTicketDetail(state).then(res=>{
-        if (res.data.segments) {
-          resolve(res.data.segments)
-        } else {
-          reject(res.msg)
-        }
-      })
-  })
-})
 
 
 export const getStationCode = createAction(GETSTATIONCODE, (state) => {
@@ -62,6 +50,9 @@ export const sendCheckTicket = createAction(SENDCHECKTICKETMESSAGE, (state) => {
       })
   })
 })
+
+
+
 
 
 

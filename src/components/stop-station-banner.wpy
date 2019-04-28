@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-23 10:59:29
- * @LastEditTime: 2019-04-23 15:01:44
+ * @LastEditTime: 2019-04-26 13:51:42
  -->
 <style lang="less">
    .stop-station-list{
@@ -12,6 +12,7 @@
      position: fixed;
      left: 0;
      top: 0;
+     z-index: 10;
      background-color: rgba(0, 0, 0, 0.3);
      .stop-main{
        width: 90%;

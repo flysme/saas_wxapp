@@ -3,9 +3,9 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-03-13 17:55:11
- * @LastEditTime: 2019-04-17 14:55:00
+ * @LastEditTime: 2019-04-26 10:02:05
  */
-import { WEIXINLOADUSERINFO} from '../types/login'
+import { WEIXINLOADUSERINFO,GETSESSIONID,GETOPENID } from '../types/login'
 import { createAction } from 'redux-actions'
 import { LOGIN } from '@/http/index'
 import  UTILS from '@/utils/utils' // 本地缓存
@@ -46,7 +46,7 @@ const headersKey = {
 // }
 
 
-const Login_Request = (iv,signature,encryptedData,rawData)=>{
+const Login_Request = ()=>{
   return new Promise((resolve,reject)=>{
     wx.login({
       success(res) {
@@ -90,6 +90,34 @@ export const wxLogin = createAction(WEIXINLOADUSERINFO,(state) => {
             reject()
           }
       })
+    })
+  })
+})
+
+
+export const getSessionId = createAction(GETSESSIONID, (state) => {
+  return new Promise((resolve,reject) => {
+    LOGIN.getSessionId().then(res=>{
+        if (res.data && res.data.sessionid) {
+          resolve(res.data.sessionid)
+        } else {
+          reject(res.msg)
+        }
+      })
+  })
+})
+
+export const getOpenId = createAction(GETOPENID, (state) => {
+  return new Promise((resolve,reject) => {
+    Login_Request().then(({ code })=> {
+      console.log(code,'code')
+      // LOGIN.getOpenId(Object.assign({},state,{code})).then(res=>{
+      //   if (res.data && res.data) {
+      //     resolve(res.data)
+      //   } else {
+      //     reject(res.msg)
+      //   }
+      // })
     })
   })
 })

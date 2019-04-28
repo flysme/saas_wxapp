@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-16 10:21:21
- * @LastEditTime: 2019-04-25 15:40:47
+ * @LastEditTime: 2019-04-25 16:09:53
  -->
 <style lang="scss">
   .ticket-detail{
@@ -11,7 +11,6 @@
     padding: 20rpx;
     height:100vh;
     box-sizing: border-box;
-    // background-color: #fafafa;
     .train-info{
       width: 100%;
       height: 200rpx;
@@ -39,37 +38,68 @@
         }
       }
     }
-    .seats-info{
+    .user-info{
       width: 100%;
-      min-height: 200rpx;
       margin-top: 20rpx;
       background-color: #fff;
       border-radius: 20rpx;
       box-sizing: border-box;
       padding: 20rpx;
-      .seats-item{
+      .empty-user-info{
+        min-height: 60rpx;
         justify-content: space-between;
-        height: 80rpx;
         align-items: center;
-        .seats-sku{
-          color: #333;
+        .entering-user{
+          padding-left: 20rpx;
         }
-        .seats-price{
-          color: #fc6954;
+        &>image{
+          display: block;
+          width: 40rpx;
+          height: 40rpx;
         }
-        .seats-btn{
-          width: 120rpx;
-          height: 50rpx;
-          line-height: 50rpx;
-          text-align: center;
-          border-radius: 25rpx;
-          margin:0;
-          color: #fff;
-          background:linear-gradient(to right,#ff8222,#f44444);
+      }
+    }
+    .user-mobile{
+       width: 100%;
+       min-height: 100rpx;
+       align-items: center;
+       margin-top: 20rpx;
+       background-color: #fff;
+       border-radius: 20rpx;
+       box-sizing: border-box;
+       padding: 20rpx;
+       .nav-title{
+          padding-left: 20rpx;
         }
-        .self-btn{
-          background:linear-gradient(to right, #289ffb, #287ffb);
-        }
+       input{
+         height: 40rpx;
+         line-height: 40rpx;
+          padding-left: 20rpx;
+          text-align: left;
+       } 
+       .mobile-holder{
+         text-align: left;
+       }
+    }
+    .btn-order{
+      width: 100%;
+      height: 90rpx;
+      align-items: center;
+      justify-content: space-between;
+      background-color:#FFF;
+      bottom: 0;
+      left: 0;
+      .nav-title{
+        padding: 0 20rpx;
+        color: #ff8222;
+      }
+      .submit-order{
+        width:220rpx;
+        height: 90rpx;
+        line-height: 90rpx;
+        color: #FFF;
+        background-color: #f44444;
+        text-align: center;
       }
     }
   }
@@ -85,7 +115,6 @@
                 <view class="center-main">
                     <view class="train-number f-14">{{ticketItemInfo.traincode}}</view>
                     <view class="station-line f-11" @tap="showBanner">时刻表</view>
-                     <!-- <view class="train-use-time f-17">{{ticketItemInfo.spantime}}</view> -->
                 </view>
                 <view class="start-time">
                     <view class="time  f-20 font-weight-500">{{ticketItemInfo.totime}}</view>
@@ -93,21 +122,22 @@
                 </view>
         </view>
     </view>
-    <view class="seats-info">
-      <view class="seats-item sys-flex" wx:for-items="{{ticketItemInfo.seatList}}" wx:for-index="idx" wx:for-item="seat_item" wx:key="id">
-          <view class="seats-sku f-16">{{seat_item.seatName}}</view>
-          <view class="seats-status f-16">{{seat_item.seatInventory}}{{seat_item.seatInventory!='无' ?'张':''}}</view>
-          <view class="seats-price f-17">￥{{seat_item.seatPrice}}</view>
-          <block wx:if="{{seat_item.seatInventory=='无'}}">
-              <button  class="seats-btn f-12" open-type="getUserInfo" @getuserinfo="getuserinfo" data-item="{{seat_item}}"  wx:if="{{!is_Login}}">去监控</button>
-               <form name='pushMsgFm' report-submit @submit='sendOnTicket' data-item="{{seat_item}}" wx:else>   
-                  <button class="seats-btn f-12" form-type="submit" >去监控</button>
-               </form>
-          </block>
-          <block wx:else>
-              <button class="seats-btn f-12 self-btn" @tap="buyToast">自行购票</button>
-          </block>
-      </view>
+    <view class="user-info">
+        <view class="empty-user-info sys-flex">
+            <view class="entering-user f-16 font-weight-500 sys-flex-one">添加乘车人信息</view>
+            <image src="/static/images/ticket/adduser.png"/>
+        </view>
+    </view>
+    <view class="user-mobile sys-flex">
+        <view class="nav-title f-16 font-weight-500">联系手机</view>
+        <input type="text" placeholder="用于出票短信" placeholder-class="mobile-holder" class="f-14">
+    </view>
+    <view class="btn-order sys-flex fixed">
+       <view class="nav-title f-18 font-weight-500 sys-flex-one">
+         <text class="f-12">￥</text>
+         <text class="f-19">86</text>
+       </view>
+       <view class="submit-order f-16">提交订单</view>
     </view>
     <Stopstationbanner :stopsList.sync="stopsList" wx:if="{{showtips}}"></Stopstationbanner>
   </view>
@@ -136,9 +166,9 @@
   getTicketDetail:ACTION.getTicketDetail,
   sendCheckTicket:ACTION.sendCheckTicket,
 })
-  export default class TicketDetail extends wepy.page {
+  export default class Order extends wepy.page {
       config = {
-        navigationBarTitleText: '车次详情'
+        navigationBarTitleText: '下单'
       }
       components = {
        Stopstationbanner
@@ -148,11 +178,6 @@
         trainCode:'',
         stopsList:[], //经停站列表
         showtips:false
-      }
-      events = {
-          'close-toast': () => {
-            this.showtips = false;
-          }
       }
       onLoad (options) {
         this.trainCode = options.trainCode;
@@ -196,6 +221,11 @@
           } 
         })
       }
+      events = {
+          'close-toast': () => {
+            this.showtips = false;
+          }
+      }
       methods = {
         showBanner () {
           this.showtips = true;
@@ -206,20 +236,26 @@
         },
         // 购票btn
         buyToast () {
+         
           wx.showModal({
             title: '提示',
             content:'请授权第三方平台',
-            success:(res)=> {
+            success(res) {
               if (res.confirm) {
+                console.log('用户点击确定')
                   wx.showActionSheet({
                     itemColor:'#333',
                     itemList: ['驴妈妈旅游', '途牛旅游', '同程旅游'],
-                    success:(res) =>{
+                    success(res) {
                       console.log(res.tapIndex);
-                      wx.navigateTo({url: `../order/order?trainCode=${this.trainCode}`})
+                    },
+                    fail(res) {
+                      console.log(res.errMsg)
                     }
                   })
-              } 
+              } else if (res.cancel) {
+                console.log('用户点击取消')
+              }
             }
           })
         

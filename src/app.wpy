@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-03-01 18:06:22
- * @LastEditTime: 2019-04-16 11:10:07
+ * @LastEditTime: 2019-04-28 17:28:24
  -->
 <style lang="less">
 page{
@@ -57,6 +57,7 @@ import 'wepy-async-function'
 import { setStore } from 'wepy-redux'
 import configStore from './store'
 import  UTILS from '@/utils/utils' // 本地缓存
+import * as Sentry from 'sentry/browser';
 const store = configStore()
 setStore(store)
 
@@ -72,6 +73,7 @@ export default class extends wepy.app {
       'pages/login/login',
       'pages/index/index',
       'pages/ticket_detail/ticket_detail',
+      'pages/order/order',
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -102,6 +104,10 @@ export default class extends wepy.app {
     // this.testAsync()
     this.globalData.checkIsIOS = wx.getSystemInfoSync().system.indexOf('iOS') > -1;
     this.checkSession(); //检查session是否过期
+  }
+  onShow () {
+    // Sentry.init({ dsn: 'https://0cb49d9c8e7f4b8a89e4e5d2fff24718@sentry.io/1448125' });
+    console.log(Sentry,'Sentry')
   }
   checkSession () {
     wx.checkSession({

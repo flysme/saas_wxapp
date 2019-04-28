@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-04 18:24:19
- * @LastEditTime: 2019-04-22 18:13:36
+ * @LastEditTime: 2019-04-28 15:52:42
  -->
 <style lang="scss">
 .ticket{
@@ -126,11 +126,11 @@
             }
             .btn-subscribe{
               height: 30rpx;
-              border-radius: 15rpx;
+              border-radius: 10rpx;
               text-align: center;
               line-height: 31rpx;
               color: #fff;
-              background-color: #fc6954;
+              background-color: #f44444;
               padding: 7rpx 10rpx;
               margin:8px 0 0 25px;
             }

@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-08 17:49:18
- * @LastEditTime: 2019-04-23 10:49:43
+ * @LastEditTime: 2019-04-25 17:56:33
  */
 const ticket = {
   getTicket:'/getTicket',

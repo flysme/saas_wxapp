@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-04 18:24:19
- * @LastEditTime: 2019-04-16 11:11:05
+ * @LastEditTime: 2019-04-28 16:42:37
  -->
 <style lang="scss">
    .select-ticket{
@@ -101,7 +101,9 @@
   import { connect } from 'wepy-redux'
   import * as ACTION from '@/store/actions'
   import { CHANGECITYORDER } from '../../store/types/ticket'
-  @connect({
+  import  CRYPTOJS from '@/utils/crypto' // 加密
+ 
+ @connect({
       startStation (state) {
           return state.ticket.startStation
       },
@@ -118,6 +120,8 @@
       }
   },{
   getStationCode:ACTION.getStationCode,
+  getSessionIds:ACTION.getSessionId,
+  getOpenIds:ACTION.getOpenId,
   changeCityOrder:CHANGECITYORDER,
 })
   export default class Selectticket extends wepy.page {
@@ -139,6 +143,12 @@
       }
       onLoad (options) {
         this.initAnimations();
+        this.getSessionIds().then(({payload})=>{
+            this.getOpenIds({sessionid:payload})
+        });
+        var a = CRYPTOJS.aesEncrypt(JSON.stringify({name:'zfx'}),'9cd5b4cf899492077b4a125a79af8e76','0123456789abcdef')
+         console.log(a,'CRYPTOJS')
+         console.log(JSON.parse(CRYPTOJS.aesDecrypt(a,'9cd5b4cf899492077b4a125a79af8e76','0123456789abcdef')),'CRYPTOJS')
       }
       onShow () {
 
@@ -166,6 +176,12 @@
       }
       getStationCode () {
           this.methods.getStationCode();
+      }
+      getSessionIds () {
+          return this.methods.getSessionIds();
+      }
+      getOpenIds (data) {
+          return this.methods.getOpenIds(data);
       }
       methods = {
           chooseDate () {
