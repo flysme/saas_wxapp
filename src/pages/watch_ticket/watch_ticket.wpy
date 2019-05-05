@@ -1,0 +1,80 @@
+<!--
+ * @Description: 
+ * @Author: zhaofeixiang
+ * @LastEditors: zhaofeixiang
+ * @Date: 2019-03-13 17:29:10
+ * @LastEditTime: 2019-05-05 10:49:24
+ -->
+<style lang="scss">
+  .watch-ticket{
+    .watch-list{
+      padding: 20rpx;
+      .watch-item{
+        width: 100%;
+        min-height: 100rpx;
+        padding:20rpx;
+        box-sizing: border-box;
+        background-color: #FFF;
+        border-radius: 20rpx;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20rpx;
+      }
+      .watch-status-over{
+        color: #fc6954;
+      }
+    }
+  }
+</style>
+<template>
+  <view class="watch-ticket">
+    <view class="watch-list">
+      <view class="watch-item sys-flex" wx:for-items="{{monitorList}}" wx:key="*this">
+          <view class="watch-left">
+              <view class="watch-station f-17 font-weight-500">{{item.fromCity}}-{{item.toCity}}</view>
+              <view class="watch-time f-13">{{item.train_date}}  | {{item.trainCode}}{{item.seatName}}</view>
+          </view>
+          <view class="watch-status f-15 font-weight-500 {{item.timeout ? 'watch-status-over' :''}}">{{item.timeout ? '监控结束' : '正在监控'}}</view>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import { connect } from 'wepy-redux'
+  import { TICKET } from '@/http/index'
+  import * as ACTION from '@/store/actions'
+  @connect({},{
+  wxLogin:ACTION.wxLogin,
+})
+  export default class Watch extends wepy.page {
+      config = {
+        navigationBarTitleText: '车票监控'
+      }
+      data = {
+        monitorList:[]
+      }
+      onShow () {
+        this.getUserMonitorList();
+      }
+      methods = {
+        wxLoginInfo (e) {
+          this.methods.wxLogin(e).then(()=>{
+            
+          })
+        },
+      }
+      getUserMonitorList () {
+          TICKET.getUserMonitorList().then(res=>{
+            if (res.status == 0) {
+              const monitorList = res.data.monitorList;
+              this.monitorList = monitorList;
+              this.$apply();
+            }
+          })
+      }
+      onPullDownRefresh () {
+        this.getUserMonitorList();
+      }
+  }
+</script>

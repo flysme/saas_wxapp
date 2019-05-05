@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-08 17:45:18
- * @LastEditTime: 2019-04-25 11:08:48
+ * @LastEditTime: 2019-04-29 17:27:50
  */
 export const GETTICKET = 'GETTICKET';
 
@@ -15,7 +15,7 @@ export const CHANGECITYORDER = 'CHANGECITYORDER';
 
 export const CHOOSEDATE = 'CHOOSEDATE';
 
-
+export const SETUSERMOBILE = 'SETUSERMOBILE';
 
 export const GETPREVIOUSDAY = 'GETPREVIOUSDAY';
 

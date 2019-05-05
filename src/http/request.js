@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-03-05 10:00:01
- * @LastEditTime: 2019-04-25 11:12:54
+ * @LastEditTime: 2019-04-30 09:56:00
  */
 import wepy from 'wepy'
 import  UTILS from '@/utils/utils' // 本地缓存
@@ -14,16 +14,14 @@ const headers = {
   'content-type':'application/json',
 }
 // 设置全局host
-// const host= 'https://20130510.cn/api/';
-
 const host= 'https://api.20130510.cn/api/v1';
-
-// const host= 'http://www.vuetext.com:8083/api/';
-
 
 const key = '0123456789abcdef'; //密钥 16 位
 const iv = '0123456789abcdef'; //初始向量 initial vector 16 位
 
+/**
+ * 序列化params
+ */
 const serializeUrl = (data)=>{
   let joinStr = '';
   if (data instanceof Object && Object.keys(data).length) {
@@ -34,8 +32,11 @@ const serializeUrl = (data)=>{
   return joinStr;
 }
 
+
 // const MAX_LOGIN_TIMES = 3; //最多登录次数
-/* 微信登录 */ 
+/**
+ * 微信登录
+ */ 
 const checkWxLogin = () =>{
   return new Promise((resolve,reject)=>{
     let SESSION_ID = UTILS.StorageSync.get('sessionid');
@@ -58,8 +59,9 @@ const checkWxLogin = () =>{
   })
 }
 
-/*微信检查session-key是否过期 */ 
-
+/**
+ * 微信检查session-key是否过期
+ */ 
 const checkSession = ()=>{
   return new Promise((resolve)=>{
     wx.checkSession({
@@ -90,23 +92,28 @@ const WxRequest = async (url,data={},method='GET',wx_header,checkLogin)=>{
   url = host + url;
   return new Promise((resolve,reject)=>{
     wx.showNavigationBarLoading()
+
     const request = (request_headers={})=>{
       header = Object.assign({},header,request_headers);
       wepy.request({url,data,method,header,
         success: res => {
           if (res.statusCode == 200) {
              resolve(res.data);
+          } else if (res.statusCode == 403) { //用户未登录 | 登录失效
+            UTILS.StorageSync.remove('sessionid') // 移除sessionid
+            reject(res.msg);
           } else {
             reject(res.errMsg);
           }
         },
         fail: err => reject(err),
-        complete:()=> {
+        complete: _=> {
           wx.hideNavigationBarLoading()
           wx.stopPullDownRefresh();
         }
       })
     }
+    
     if (checkLogin) {
       checkWxLogin().then(res=>{
         request(res);

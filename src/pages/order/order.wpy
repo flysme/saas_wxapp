@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-16 10:21:21
- * @LastEditTime: 2019-04-25 16:09:53
+ * @LastEditTime: 2019-04-30 10:31:42
  -->
 <style lang="scss">
   .ticket-detail{
@@ -80,6 +80,23 @@
        .mobile-holder{
          text-align: left;
        }
+       .wechat-main{
+          width:110rpx;
+          height:60rpx;
+          background-color:#24c14c;
+          line-height:60rpx;
+          border-radius:10rpx;
+          .wechat-name{
+            width:110rpx;
+            height:60rpx;
+            background:none;
+            color:#FFF;
+            line-height:60rpx;
+            text-align:center;
+            border-radius:10rpx;
+            font-size:24rpx;
+          }
+       }
     }
     .btn-order{
       width: 100%;
@@ -100,6 +117,7 @@
         color: #FFF;
         background-color: #f44444;
         text-align: center;
+        border-radius: 0;
       }
     }
   }
@@ -122,22 +140,27 @@
                 </view>
         </view>
     </view>
-    <view class="user-info">
+    <!-- <view class="user-info">
         <view class="empty-user-info sys-flex">
             <view class="entering-user f-16 font-weight-500 sys-flex-one">添加乘车人信息</view>
             <image src="/static/images/ticket/adduser.png"/>
         </view>
-    </view>
+    </view> -->
     <view class="user-mobile sys-flex">
         <view class="nav-title f-16 font-weight-500">联系手机</view>
-        <input type="text" placeholder="用于出票短信" placeholder-class="mobile-holder" class="f-14">
+        <input type="number" minlength="11" maxlength="11" value="{{mobile}}" placeholder="用于出票短信" @input="setUserMobile" placeholder-class="mobile-holder" class="f-14 sys-flex-one">
+        <!-- <view class="wechat-main f-14">
+          <button class="wechat-name" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">微信获取</button>
+        </view> -->
     </view>
     <view class="btn-order sys-flex fixed">
        <view class="nav-title f-18 font-weight-500 sys-flex-one">
          <text class="f-12">￥</text>
-         <text class="f-19">86</text>
+         <text class="f-19">--</text>
        </view>
-       <view class="submit-order f-16">提交订单</view>
+       <form name='pushMsgFm' report-submit @submit="sendOnTicket">   
+         <button class="submit-order f-16" form-type="submit">提交订单</button>
+       </form>
     </view>
     <Stopstationbanner :stopsList.sync="stopsList" wx:if="{{showtips}}"></Stopstationbanner>
   </view>
@@ -146,7 +169,8 @@
   import wepy from 'wepy'
   import { connect } from 'wepy-redux'
   import * as ACTION from '@/store/actions'
-  import { TICKET } from '@/http/index'
+  import { TICKET,LOGIN } from '@/http/index'
+  import { SETUSERMOBILE } from '../../store/types/ticket'
   import Stopstationbanner from '@/components/stop-station-banner' // alias example
   @connect({
     is_Login (state) {
@@ -161,8 +185,12 @@
     arriveStation (state) {
       return state.ticket.arriveStation
     },
+    mobile (state) {
+      return state.ticket.mobile
+    }
   },{
   wxLogin:ACTION.wxLogin,
+  setUserMobiles:SETUSERMOBILE,
   getTicketDetail:ACTION.getTicketDetail,
   sendCheckTicket:ACTION.sendCheckTicket,
 })
@@ -175,12 +203,15 @@
       }
       data = {
         ticketItemInfo:{},
+        seatInfo:{}, //座位信息
         trainCode:'',
+        formId:'', //模板id
         stopsList:[], //经停站列表
         showtips:false
       }
       onLoad (options) {
         this.trainCode = options.trainCode;
+        this.seatInfo = JSON.parse(options.seatInfo);
         this.getTicketDetails();
         this.getstopStation();
       }
@@ -227,64 +258,46 @@
           }
       }
       methods = {
+        // 显示经停站banner
         showBanner () {
           this.showtips = true;
         },
-        // 获取用户信息
-        getuserinfo (e) {
-          this.methods.wxLogin(e)
+        // 设置用户手机号
+        setUserMobile ({detail:{value}}) {
+          this.methods.setUserMobiles(value);
         },
-        // 购票btn
-        buyToast () {
-         
-          wx.showModal({
-            title: '提示',
-            content:'请授权第三方平台',
-            success(res) {
-              if (res.confirm) {
-                console.log('用户点击确定')
-                  wx.showActionSheet({
-                    itemColor:'#333',
-                    itemList: ['驴妈妈旅游', '途牛旅游', '同程旅游'],
-                    success(res) {
-                      console.log(res.tapIndex);
-                    },
-                    fail(res) {
-                      console.log(res.errMsg)
-                    }
-                  })
-              } else if (res.cancel) {
-                console.log('用户点击取消')
-              }
-            }
+        getPhoneNumber(e) {
+          //  wx.showToast({title:'即将上线',icon:'none'})
+          console.log(e.detail.errMsg)
+          console.log(e.detail.iv)
+          console.log(e.detail.encryptedData)
+          const { encryptedData,iv } = e.detail;
+          LOGIN.getUserNumber({encryptedData,iv}).then(res=>{
+            console.log(res,'res')
           })
-        
         },
-        sendOnTicket (data) {
-          const { item } = data.currentTarget.dataset;
-          const { formId } = data.detail;
-          wx.showModal({
-            title: '确认监控',
-            content: '有票将通过微信通知给您',
-            success:(res)=>{
-              if (res.confirm) {
-                this.methods.sendCheckTicket({
-                  form_id:formId,
-                  trainCode: this.ticketItemInfo.traincode,
-                  train_date: this.train_date,
-                  seatName:item.seatName,
-                  seatCode:item.seatCode,
-                  price:item.seatPrice,
-                  ticketquery:{
-                    fromCitycode:this.startStation.code,
-                    toCitycode:this.arriveStation.code,
-                    date:this.train_date,
-                    trainCode: this.ticketItemInfo.traincode,
-                  }
-                })
+        sendOnTicket (e) {
+           if (!this.mobile)return wx.showToast({title:'请填写接收短信手机号',icon:'none'})
+           const form_id = e.dedatil;
+           this.methods.sendCheckTicket({
+              form_id,
+              trainCode: this.ticketItemInfo.traincode,
+              train_date: this.train_date,
+              seatName:this.seatInfo.seatName,
+              seatCode:this.seatInfo.seatCode,
+              price:this.seatInfo.seatPrice,
+              mobile:this.mobile,
+              ticketquery:{
+                fromCitycode:this.startStation.code,
+                toCitycode:this.arriveStation.code,
+                date:this.train_date,
+                trainCode: this.ticketItemInfo.traincode,
               }
-            }
-          })
+            }).then(_=>{
+              setTimeout(_=>{
+                wx.navigateBack({delta: 1})
+              },1000)
+            })
         }
       }
       onPullDownRefresh () {

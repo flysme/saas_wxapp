@@ -3,10 +3,10 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-03-13 17:52:41
- * @LastEditTime: 2019-04-25 18:15:38
+ * @LastEditTime: 2019-04-30 10:26:13
  */
 
-import { get } from '@/http/request'
+import { get,post } from '@/http/request'
 import  login from '@/http/urls/login'
 
 const LOGIN = {
@@ -25,5 +25,8 @@ const LOGIN = {
   getOpenId (data) {
     return get(login.getOpenId,data)
   },
+  getUserNumber (data) {
+    return post(login.getUserNumber,data,{},true)
+  }
 }
 export default LOGIN;

@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-08 17:45:05
- * @LastEditTime: 2019-04-25 17:56:54
+ * @LastEditTime: 2019-04-29 10:18:52
  */
 import { GETTICKET,GETSTATIONCODE,SENDCHECKTICKETMESSAGE } from '../types/ticket'
 import { createAction } from 'redux-actions'
@@ -13,6 +13,7 @@ export const getTicket = createAction(GETTICKET, (state) => {
   return new Promise((resolve,reject) => {
     wx.showLoading({title: '拼命加载中'})
     TICKET.getTicket(state).then(res=>{
+        console.log(res,'---res----')
         if (res.data.segments) {
           resolve(res.data.segments)
         } else {

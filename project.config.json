@@ -12,6 +12,8 @@
 	"appid": "wx6e219488e53a4991",
 	"projectname": "mpstore",
 	"miniprogramRoot": "dist/",
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
 	"condition": {
 		"search": {
 			"current": -1,

@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-08 17:49:18
- * @LastEditTime: 2019-04-25 17:56:33
+ * @LastEditTime: 2019-04-30 11:24:33
  */
 const ticket = {
   getTicket:'/getTicket',
@@ -11,6 +11,7 @@ const ticket = {
   onCheckSeatStatus:'/onCheckSeatStatus',
   getTicketDetail:'/getTicketDetail',
   getstopStation:'/getstopStation',
+  getUserMonitorList:'/getUserMonitorList',
 }
 
 export default ticket;

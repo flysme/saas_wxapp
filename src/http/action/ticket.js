@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-08 17:49:09
- * @LastEditTime: 2019-04-25 17:56:14
+ * @LastEditTime: 2019-04-30 11:24:26
  */
 
 import { get,post } from '@/http/request'
@@ -29,6 +29,10 @@ const TICKET = {
   // 获取经停站信息
   getstopStation (data) {
     return get(ticket.getstopStation,data)
+  },
+  // 获取监控列表
+  getUserMonitorList () {
+    return get(ticket.getUserMonitorList,{},{},true)
   }
 }
 export default TICKET;

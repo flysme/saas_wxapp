@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-16 10:21:21
- * @LastEditTime: 2019-04-25 15:40:47
+ * @LastEditTime: 2019-04-29 19:04:40
  -->
 <style lang="scss">
   .ticket-detail{
@@ -100,9 +100,7 @@
           <view class="seats-price f-17">￥{{seat_item.seatPrice}}</view>
           <block wx:if="{{seat_item.seatInventory=='无'}}">
               <button  class="seats-btn f-12" open-type="getUserInfo" @getuserinfo="getuserinfo" data-item="{{seat_item}}"  wx:if="{{!is_Login}}">去监控</button>
-               <form name='pushMsgFm' report-submit @submit='sendOnTicket' data-item="{{seat_item}}" wx:else>   
-                  <button class="seats-btn f-12" form-type="submit" >去监控</button>
-               </form>
+              <button class="seats-btn f-12" @tap="sendOnTicket" data-item="{{seat_item}}" wx:else>去监控</button>
           </block>
           <block wx:else>
               <button class="seats-btn f-12 self-btn" @tap="buyToast">自行购票</button>
@@ -202,53 +200,38 @@
         },
         // 获取用户信息
         getuserinfo (e) {
-          this.methods.wxLogin(e)
+          this.methods.wxLogin(e).then(()=>{
+              const { item } = e.currentTarget.dataset;
+              const trainCode = this.trainCode;
+              const seatInfo = JSON.stringify(item);
+              wx.navigateTo({url: `../order/order?trainCode=${trainCode}&seatInfo=${seatInfo}`})
+          })
         },
         // 购票btn
         buyToast () {
-          wx.showModal({
-            title: '提示',
-            content:'请授权第三方平台',
-            success:(res)=> {
-              if (res.confirm) {
-                  wx.showActionSheet({
-                    itemColor:'#333',
-                    itemList: ['驴妈妈旅游', '途牛旅游', '同程旅游'],
-                    success:(res) =>{
-                      console.log(res.tapIndex);
-                      wx.navigateTo({url: `../order/order?trainCode=${this.trainCode}`})
-                    }
-                  })
-              } 
-            }
-          })
+          // wx.showModal({
+          //   title: '提示',
+          //   content:'请授权第三方平台',
+          //   success:(res)=> {
+          //     if (res.confirm) {
+          //         wx.showActionSheet({
+          //           itemColor:'#333',
+          //           itemList: ['驴妈妈旅游', '途牛旅游', '同程旅游'],
+          //           success:(res) =>{
+          //             console.log(res.tapIndex);
+          //             wx.navigateTo({url: `../order/order?trainCode=${this.trainCode}`})
+          //           }
+          //         })
+          //     } 
+          //   }
+          // })
         
         },
-        sendOnTicket (data) {
-          const { item } = data.currentTarget.dataset;
-          const { formId } = data.detail;
-          wx.showModal({
-            title: '确认监控',
-            content: '有票将通过微信通知给您',
-            success:(res)=>{
-              if (res.confirm) {
-                this.methods.sendCheckTicket({
-                  form_id:formId,
-                  trainCode: this.ticketItemInfo.traincode,
-                  train_date: this.train_date,
-                  seatName:item.seatName,
-                  seatCode:item.seatCode,
-                  price:item.seatPrice,
-                  ticketquery:{
-                    fromCitycode:this.startStation.code,
-                    toCitycode:this.arriveStation.code,
-                    date:this.train_date,
-                    trainCode: this.ticketItemInfo.traincode,
-                  }
-                })
-              }
-            }
-          })
+        sendOnTicket (e) {
+           const { item } = e.currentTarget.dataset;
+           const trainCode = this.trainCode;
+           const seatInfo = JSON.stringify(item);
+           wx.navigateTo({url: `../order/order?trainCode=${trainCode}&seatInfo=${seatInfo}`})
         }
       }
       onPullDownRefresh () {

@@ -3,11 +3,11 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-04-08 17:45:13
- * @LastEditTime: 2019-04-22 15:13:39
+ * @LastEditTime: 2019-04-29 17:35:27
  */
 import { handleActions } from 'redux-actions'
 import UTILS from '@/utils/utils';
-import { GETSTATIONCODE, SETCITY,CHANGECITYORDER,CHOOSEDATE,GETPREVIOUSDAY,GETNEXTDAY,INITBTNSTATUS,SENDCHECKTICKETMESSAGE } from '../types/ticket'
+import { GETSTATIONCODE, SETCITY,CHANGECITYORDER,CHOOSEDATE,GETPREVIOUSDAY,GETNEXTDAY,INITBTNSTATUS,SENDCHECKTICKETMESSAGE,SETUSERMOBILE } from '../types/ticket'
 
 
 const date = UTILS.resetnewDate(); //当前时间
@@ -75,6 +75,13 @@ export default handleActions({
   [SENDCHECKTICKETMESSAGE] (state,action) {
     return {
       ...state
+    }
+  },
+  [SETUSERMOBILE] (state,action) {
+    console.log(action,'action')
+    return {
+      ...state,
+      mobile:Number(action.payload)
     }
   }
 }, {

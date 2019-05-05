@@ -3,7 +3,7 @@
  * @Author: zhaofeixiang
  * @LastEditors: zhaofeixiang
  * @Date: 2019-03-01 18:06:22
- * @LastEditTime: 2019-04-29 09:36:29
+ * @LastEditTime: 2019-04-30 10:41:34
  -->
 <style lang="less">
 page{
@@ -65,6 +65,7 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/select_ticket/select_ticket',
+      'pages/watch_ticket/watch_ticket',
       'pages/choose_date/choose_date',
       'pages/ticket/ticket',
       'pages/choose_city/choose_city',
@@ -75,6 +76,24 @@ export default class extends wepy.app {
       'pages/ticket_detail/ticket_detail',
       'pages/order/order',
     ],
+    tabBar: {
+      color:'#515151',
+      selectedColor:"#f44444",
+      list:[
+        {
+          pagePath:'pages/select_ticket/select_ticket',
+          text:'首页',
+          iconPath:'static/images/tab/home_normal.png',
+          selectedIconPath:'static/images/tab/home_selected.png'
+        },
+        {
+          pagePath:'pages/watch_ticket/watch_ticket',
+          text:'监控',
+          iconPath:'static/images/tab/watch_normal.png',
+          selectedIconPath:'static/images/tab/watch_selected.png'
+        }
+      ]
+    },
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
