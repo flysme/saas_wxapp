@@ -5,7 +5,7 @@
  * @Date: 2019-03-01 18:06:22
  * @LastEditTime: 2019-05-05 11:02:37
  -->
-<style lang="less">
+<style lang="scss">
 page{
   background-color: #efefef;
 }

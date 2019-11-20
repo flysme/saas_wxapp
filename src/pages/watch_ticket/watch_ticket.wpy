@@ -21,6 +21,9 @@
         margin-bottom: 20rpx;
       }
       .watch-status-over{
+        color: #efefef;
+      }
+      .watching {
         color: #fc6954;
       }
     }
@@ -29,12 +32,12 @@
 <template>
   <view class="watch-ticket">
     <view class="watch-list">
-      <view class="watch-item sys-flex" wx:for-items="{{monitorList}}" wx:key="*this">
+      <view class="watch-item sys-flex {{item.timeout ? 'watch-status-over' : ''}}" wx:for-items="{{monitorList}}" wx:key="*this">
           <view class="watch-left">
               <view class="watch-station f-17 font-weight-500">{{item.fromCity}}-{{item.toCity}}</view>
               <view class="watch-time f-13">{{item.train_date}}  | {{item.trainCode}}{{item.seatName}}</view>
           </view>
-          <view class="watch-status f-15 font-weight-500 {{item.timeout ? 'watch-status-over' :''}}">{{item.timeout ? '监控结束' : '正在监控'}}</view>
+          <view class="watch-status f-15 font-weight-500 {{ item.timeout ? '' : 'watching'}}">{{item.timeout ? '监控结束' : '正在监控'}}</view>
       </view>
     </view>
   </view>
@@ -65,12 +68,16 @@
         },
       }
       getUserMonitorList () {
+          wx.showLoading({title: '加载中...'})
           TICKET.getUserMonitorList().then(res=>{
             if (res.status == 0) {
               const monitorList = res.data.monitorList;
               this.monitorList = monitorList;
               this.$apply();
+              wx.hideLoading()
             }
+          }).catch(err=>{
+            wx.hideLoading()
           })
       }
       onPullDownRefresh () {
